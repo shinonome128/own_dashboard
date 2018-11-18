@@ -11,8 +11,14 @@ Check の効率化
 ドキュメント、コード管理  
 https://github.com/shinonome128/own_dashboard  
   
-サーバレスのメリット、本質、 JX 通信の小笠原さんの解説  
+サーバレスのメリット、本質、 JX 通信の小笠原さんの解説  ラップの仕方、ディプロイ、監視、可視化、CI  
 https://employment.en-japan.com/engineerhub/entry/2018/07/03/110000  
+  
+Cloud Function 本家、 CI/CD, Clud Function エミュレータ  
+https://cloud.google.com/functions/docs/bestpractices/testing  
+  
+Clud Function エミュレータ、本家  
+https://github.com/GoogleCloudPlatform/cloud-functions-emulator/  
   
 ## やること  
   
@@ -174,19 +180,89 @@ $ serverless invoke -f hello
 CloudWatch Metricsの管理画面を開き、メトリクス→Watcher→URL→ResponseTimeと選択してみてください。すると、以下のようにグラフが作られています  
 サーバーレスにWebサービスの監視を定期的に行い、結果を保存してグラフが見られるようになりました。  
   
-ここから再開  
+監視の結果、異常があればSlackへアラートを投げるといったシステムへ発展させることもできます。  
+サーバーレスなシステムの設計を突き詰めていくと、マネージドサービスを組み合わせ、イベントドリブンで各サービスが発火していくような設計になります。  
   
+コードをより良くしてみる〜ローカル環境での実行  
   
+handler.pyは、AWS Lambdaの環境で動くことしか想定していないコード  
+watcher.pyというファイルを作って、次のようにコードを書き換えてみます。  
+```  
+# watcher.py  
+import datetime  
+import urllib.request  
+import boto3  
+  
+def watch(url):  
+    cloudwatch = boto3.client('cloudwatch')  
+    started_at = datetime.datetime.now()  
+    with urllib.request.urlopen(url):  
+        # 略  
+  
+# `python watcher.py https://example.com`と実行できる  
+if __name__ == '__main__':  
+    import sys  
+    watch(sys.argv[1])  
+```  
+```  
+# handler.py  
+import wacher  
+# Lambdaはこの関数を呼び出す  
+def hello(event, context):  
+    watcher.watch("https://example.com")  
+```  
+この設計の場合、今まで通りLambda上でも動き、ローカル環境でpython watcher.py [url]することでも動作できます。  
+ローカルで動くCLIツールを、Lambdaでも動くようにラップするような設計  
+Lambdaはあくまでデプロイする先の環境の一つであるという捉え方をして開発する  
+別のサーバーレス環境やPaaSへ移行したり、サーバーレスをやめることも簡単  
+  
+サーバーレスアプリケーションの継続的な開発  
+Apexなどのいくつかのオープンソースなツールが存在します。ApexにはTerraformとの連携ができるメリットがある  
+CIでの自動テストをどのように行うのかという問題も出てきます。テスタビリティを高めるという観点でも、特定のクラウドサービス依存しないようにプログラムを設計することが重要  
+マネージドサービスへのアクセスを含むシステムをテストする際には、localstackのような「マネージドサービスのモックをしたもの」を使うと、クラウドの利用費がかからず、テストに使ったリソースの破棄も容易なので便利  
+  
+サーバーレスでの課題〜システムの監視と管理  
+「複数の小さなシステムを組み合わせたときの監視をどうしていくか？」という点が運用の課題  
+AWSでは、公式の監視ツールとして、Amazon CloudWatchと、AWS X-ray  
+Amazon CloudWatchは、AWSの各サービスのログやメトリクスを表示  
+AWS X-rayは複数システムの連携という観点から、プロファイリングが行える  
+サーバーレスなシステムの設計をもっと大規模にすると、マネージドサービスが複雑に絡み合って管理が大変になっていく傾向にあります。  
+管理の観点からも、Serverless Frameworkのようなツールの利用を前提とすると良い  
   
 ## サービスと外部ツールの検討  
   
 CloudWatch Events  
+イベントトリガーは今回は使わない  
+GCF の HTTP トリガーで十分  
+  
 Lambda  
+GCF を使う  
+  
 CloudWatch Metrics  
+メトリクスの格納先と可視化  
+stack driver を使う  
+  
 外部のツール  
+ディプロイ管理  
+terraform を使う  
+  
+モック環境  
+マネージドサービスのモックをしたもの  
+Cloud Functions エミュレータ  
+  
+CI ツール  
+次のステップ、今回はやらない  
   
 ## GitHub のコミット数を取得  
   
-## G ドライブのスプレッドシートに値を入力  
+ここから再開  
+チュートリアルコードの解析  
+サンプルコード集める  
+  
+## Terraform でディプロイ  
+  
+## Cloud Functions エミュレータでテスト  
+  
+## スタックドライバーにコミット数を入力  
   
 以上  
