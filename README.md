@@ -20,6 +20,18 @@ https://cloud.google.com/functions/docs/bestpractices/testing
 Clud Function エミュレータ、本家  
 https://github.com/GoogleCloudPlatform/cloud-functions-emulator/  
   
+flask API ガイド  
+http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response  
+  
+flask 超入門  
+http://python.zombie-hunting-club.com/entry/2017/11/03/223503  
+  
+フロントにJS, バックエンドにPython を使った簡単な例、JS から Python スクリプトを実行している例、ディプロイツールでディレクトリごとアップロードする方法がわかる  
+http://catindog.hatenablog.com/entry/2017/12/18/213627  
+  
+Python 単体で作成した例、変数の定義方法、インポートの仕方がわかる  
+https://uyamazak.hatenablog.com/entry/2018/07/20/185026  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -255,14 +267,84 @@ CI ツール
   
 ## GitHub のコミット数を取得  
   
-ここから再開  
 チュートリアルコードの解析  
-サンプルコード集める  
+```  
+def hello_world(request):  
+    """Responds to any HTTP request.  
+    Args:  
+        request (flask.Request): HTTP request object.  
+    Returns:  
+        The response text or any set of values that can be turned into a  
+        Response object using  
+        `make_response <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>`.  
+    """  
+    request_json = request.get_json()  
+    if request.args and 'message' in request.args:  
+        return request.args.get('message')  
+    elif request_json and 'message' in request_json:  
+        return request_json['message']  
+    else:  
+        return f'Hello World!'  
+```  
+flask API に従って記載するらしい  
+HTTP トリガーで処理ができればよいので、、  
   
-## Terraform でディプロイ  
+フロントにJS, バックエンドにPython を使った簡単な例  
+JS から Python スクリプトを実行している  
+ディプロイツールでディレクトリごとアップロードするには、dcloud ツール使っている  
+```  
+# index.js  
+const spawnSync = require('child_process').spawnSync;  
+exports.reflection = function reflection(req, res) {  
+  result = spawnSync('./pypy3-v5.9.0-linux64/bin/pypy3', ['./reflection.py'], {  
+    stdio: 'pipe',  
+    input: JSON.stringify(req.headers)  
+  });  
+  if (result.stdout){  
+    res.status(200).send(result.stdout);  
+  }else if (result.stderr){  
+    res.status(200).send(result.stderr);  
+  }  
+};  
+```  
+```  
+# reflection.py  
+import json  
+print(json.dumps(json.loads(input()), indent=2))  
+```  
   
-## Cloud Functions エミュレータでテスト  
+Python 単体での実装方法、この方法で良いかも  
+```  
+import feedparser  
+import json  
+RSS_URL = "https://blog.yagish.jp/rss"  
+WHITELIST = ['http://192.168.2.70:2105', 'http://ml30gen9.jp:2105', 'https://rirekisho.yagish.jp']  
+MAX_ENTRIES_NUM = 3  
   
-## スタックドライバーにコミット数を入力  
+def rss2json(request):  
+    headers = {}  
+    origins = [val for key, val in request.headers if key == 'Origin']  
+    if len(origins) > 0:  
+        origin = origins[0]  
+        for allowed_url in WHITELIST:  
+            if origin == allowed_url:  
+                headers['Access-Control-Allow-Origin'] = allowed_url  
+                break  
+    headers["Content-Type"] = "application/json; charset=utf-8"  
+    headers["Cache-Control"] = "public, max-age=30, s-maxage=60"  
+    rss = {}  
+    try:  
+        raw_rss = feedparser.parse(RSS_URL)  
+        rss['feed'] = raw_rss['feed']  
+        rss['entries'] = raw_rss['entries'][:MAX_ENTRIES_NUM]  
+    except Exception(e):  
+        return (e, 500)  
+    else:  
+        return (json.dumps(rss, indent=2, ensure_ascii=False),  
+                headers)  
+```  
+  
+ここから再開  
+gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる  
   
 以上  
