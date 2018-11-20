@@ -32,6 +32,16 @@ http://catindog.hatenablog.com/entry/2017/12/18/213627
 Python 単体で作成した例、変数の定義方法、インポートの仕方がわかる  
 https://uyamazak.hatenablog.com/entry/2018/07/20/185026  
   
+GitHub APIを使ってリポジトリのアクセス数をpythonで取得、単体動作で、取得API 変更するだけなのでこれで良いかも  
+https://ak1211.com/3520  
+https://gist.github.com/ak1211/0e21640e59c56e6c4e006ebde47c441e  
+  
+PHP だけど、コミット数、行数を取得するサンプル  
+http://blog.koogawa.com/entry/2014/01/23/014718  
+  
+GitHub API 本家  
+https://developer.github.com/  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -314,6 +324,7 @@ print(json.dumps(json.loads(input()), indent=2))
 ```  
   
 Python 単体での実装方法、この方法で良いかも  
+Python 単体で作成した例、変数の定義方法、インポートの仕方がわかる  
 ```  
 import feedparser  
 import json  
@@ -344,7 +355,130 @@ def rss2json(request):
                 headers)  
 ```  
   
-ここから再開  
+GitHub APIを使ってリポジトリのアクセス数をpythonで取得  
+単体動作で、取得API 変更するだけなのでこれで良いかも  
+```  
+#!/usr/bin/env python  
+# -*- coding: utf-8 -*-  
+import os, json, functools  
+from urllib2 import urlopen, Request  
+  
+# GitHub Traffic API  
+# https://developer.github.com/v3/repos/traffic/  
+def openTrafficAPI (owner, repo, token, path):  
+    url = "https://api.github.com/repos/%s/%s/traffic/%s" % (owner, repo, path)  
+    headers = {  
+        'Authorization': 'token %s' % token,  
+        'Accept': 'application/vnd.github.spiderman-preview'  
+    }  
+    return urlopen (Request (url, headers=headers))  
+  
+# 取ってくるデーター  
+paths = [  
+    'popular/referrers',  
+    'popular/paths',  
+    'views',  
+    'clones',  
+]  
+  
+connections = []  
+try:  
+    # openTrafficAPI関数の部分適用 (認証情報を環境変数から得て)  
+    fAPI = functools.partial (openTrafficAPI,  
+                                os.environ['GITHUB_OWNER'],  
+                                os.environ['GITHUB_REPO'],  
+                                os.environ['GITHUB_TOKEN'])  
+    # open connections  
+    connections = [fAPI (p) for p in paths]  
+    # JSONパース  
+    datadicts = [json.loads (c.read ()) for c in connections]  
+finally:  
+    [c.close () for c in connections if c is not None]          # 後始末  
+  
+del connections  
+  
+# 辞書型のデーターをダンプ  
+dumps = [json.dumps (d, indent=2) for d in datadicts]  
+# 結合  
+print "\n".join (dumps)  
+```  
+  
+とりあえずサンプルを動かしてみる  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+git clone https://gist.github.com/0e21640e59c56e6c4e006ebde47c441e.git  
+copy 0e21640e59c56e6c4e006ebde47c441e\accessGitHubTraffic.py .\  
+rmdir /s /q 0e21640e59c56e6c4e006ebde47c441e  
+```  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+set GITHUB_TOKEN=hoge  
+set GITHUB_OWNER=shinonome128  
+set GITHUB_REPO=own_dashboard  
+py accessGitHubTraffic.py  
+```  
+  
+エラー  
+```  
+Traceback (most recent call last):  
+  File "accessGitHubTraffic.py", line 4, in <module>  
+    from urllib2 import urlopen, Request  
+ModuleNotFoundError: No module named 'urllib2'  
+```  
+urllib2 がない、調査  
+  
+Python3系でurllib2は使えない：代わりにurllib.requestとurllib.errorを使う  
+```  
+import urllib.request, urllib.error  
+```  
+  
+エラー  
+```  
+  File "accessGitHubTraffic.py", line 15, in openTrafficAPI  
+    return urlopen (Request (url, headers=headers))  
+NameError: name 'urlopen' is not defined  
+```  
+urlopen がこのままだと使えない、調査  
+  
+urllib2.urlopen は urllib.request.urlopen() に変更  
+```  
+Python 2.6 以前のレガシーな urllib.urlopen 関数は廃止されました。  
+urllib.request.urlopen() が過去の urllib2.urlopen に相当します。  
+urllib.urlopen において辞書型オブジェクトで渡していたプロキシの扱いは、ProxyHandler オブジェクトを使用して取得できます。  
+```  
+  
+エラー  
+```  
+  File "accessGitHubTraffic.py", line 14, in openTrafficAPI  
+    return urlopen (Request (url, headers=headers))  
+NameError: name 'Request' is not defined  
+```  
+Request がインポートされてない、 urllib.request.Request() となるので、urlopen と同じ対処が必要  
+  
+エラー  
+```  
+urllib.error.HTTPError: HTTP Error 401: Unauthorized  
+```  
+認証エラー、あー、クレデンシャル適当だった  
+  
+クレデンシャル直してもダメ  
+デバッグで URL をブラウザでたたいて確認  
+```  
+(Pdb) url  
+https://api.github.com/repos/shinonome128/own_dashboard/traffic/popular/referrers  
+```  
+```  
+{  
+  "message": "Must have push access to repository",  
+  "documentation_url": "https://developer.github.com/v3/repos/traffic/#list-referrers"  
+}  
+```  
+プッシュがない、URL 見ろとのこと  
+  
+プッシュアクセスしてから実施  
+  
+  
+  
 gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる  
   
 以上  
