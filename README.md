@@ -50,16 +50,16 @@ https://developer.github.com/v3/guides/getting-started/
   
 GitHub パーソナルアクセストークン生成、簡単に作れる  
 https://github.com/settings/tokens  
-
-GitHub API 本家、 ユーザ毎のイベント取得
-https://developer.github.com/v3/activity/events/
-
-GitHub API 本家、 レポジトリ一覧取得
-https://developer.github.com/v3/repos/#list-your-repositories
-
-GitHub API 本家、 レポジトリのコミット数を取得
-https://developer.github.com/v3/repos/commits/
-
+  
+GitHub API 本家、 ユーザ毎のイベント取得  
+https://developer.github.com/v3/activity/events/  
+  
+GitHub API 本家、 レポジトリ一覧取得  
+https://developer.github.com/v3/repos/#list-your-repositories  
+  
+GitHub API 本家、 レポジトリのコミット数を取得  
+https://developer.github.com/v3/repos/commits/  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -578,33 +578,50 @@ C:\Users\shino\doc\own_dashboard>
 ```  
   
 ## サンプルコードを参考にコミット数を取得する  
-
-サンプルコードのコピー
-```
+  
+サンプルコードのコピー  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-cp accessGitHubTraffic.py get_commit_count.py
-git add *
-git commit -m "Add first commit"
-```
-
-コミット数の API
-```
-List events performed by a user
-
-If you are authenticated as the given user, you will see your private events. Otherwise, you'll only see public events.
-
-GET /users/:username/events
-```
-
-コメント修正
-
-レポジトリの一覧を取得
-
-日付を生成
-
-レポジトリ毎のコミット数を日付指定で取得
-
-コミット数を合計
-
-
+copy accessGitHubTraffic.py get_commit_count.py  
+git add *  
+git commit -m "Add first commit"  
+```  
+  
+ユーザイベント取得  
+```  
+GET /users/:username/events  
+```  
+```  
+curl -i https://api.github.com/repos/shinonome128/own_dashboard/commits  
+```  
+これはやらない、日付指定ができないから  
+  
+コミット情報の取得  
+動いた。。  
+  
+  
+## レポジトリの一覧を取得  
+  
+ここから再開  
+```  
+GET /users/:username/repos  
+```  
+```  
+curl -i https://api.github.com/users/shinonome128/repos  
+```  
+  
+## 日付を生成  
+  
+## レポジトリ毎のコミット数を日付指定で取得  
+```  
+GET /repos/:owner/:repo/commits  
+```  
+```  
+curl -i https://api.github.com/repos/shinonome128/own_dashboard/commits  
+```  
+  
+## コミット数を合計  
+  
+## コメント修正  
+  
 以上  
