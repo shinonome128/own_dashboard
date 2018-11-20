@@ -29,9 +29,6 @@ try:
                                 os.environ['GITHUB_OWNER'],
                                 os.environ['GITHUB_REPO'],
                                 os.environ['GITHUB_TOKEN'])
-
-    import pdb; pdb.set_trace()
-
     # open connections
     connections = [fAPI (p) for p in paths]
     # JSONパース
