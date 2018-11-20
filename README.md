@@ -42,6 +42,15 @@ http://blog.koogawa.com/entry/2014/01/23/014718
 GitHub API 本家  
 https://developer.github.com/  
   
+GitHub API のアプリ登録とトークン発行方法  
+https://qiita.com/ngs/items/34e51186a485c705ffdb  
+  
+GitHub API 本家 、Getting started、認証方法、OAuth のやり方  
+https://developer.github.com/v3/guides/getting-started/  
+  
+GitHub パーソナルアクセストークン生成、簡単に作れる  
+https://github.com/settings/tokens  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -513,11 +522,55 @@ Status: 200 OK
   }  
 ]  
 ```  
+URL は間違っていない、  
   
-画面が壊れたのでここまで、続きは画面が落ち着いてから  
   
-反応変わらず 、fAPI 部分をデバッグ  
+メッセージ調査  
+Must have push access to repository  
+```  
+For repositories that you have push access to, the traffic API provides access to the information provided in the graphs section.  
+```  
+参照先の API リファレンスガイドにプッシュアクセスが必須って書いてある。。。  
+あー、トークンの発行が必要なんだね、多分  
   
-gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる  
+ベークック認証だとうまくいく  
+curl -i -u shinonome128 https://api.github.com/repos/shinonome128/own_dashboard/traffic/popular/referrers  
+  
+アクセストークンを取得して実行  
+エラー  
+```  
+urllib.error.HTTPError: HTTP Error 400: Bad Request  
+```  
+認証は治ったけど、今度はリクエスト不正、、、あー、環境変数のセットで余分が空白が入っていた。。  
+  
+動いた。。  
+```  
+C:\Users\shino\doc\own_dashboard>py accessGitHubTraffic.py  
+[]  
+[]  
+{  
+  "count": 0,  
+  "uniques": 0,  
+  "views": []  
+}  
+{  
+  "count": 1,  
+  "uniques": 1,  
+  "clones": [  
+    {  
+      "timestamp": "2018-11-18T00:00:00Z",  
+      "count": 1,  
+      "uniques": 1  
+    }  
+  ]  
+}  
+  
+C:\Users\shino\doc\own_dashboard>  
+```  
+  
+## サンプルコードを参考にコミット数を取得する  
+  
+ここから再開  
+  
   
 以上  
