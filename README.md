@@ -467,6 +467,7 @@ urllib.error.HTTPError: HTTP Error 401: Unauthorized
 (Pdb) url  
 https://api.github.com/repos/shinonome128/own_dashboard/traffic/popular/referrers  
 ```  
+ブラウザでの確認結果  
 ```  
 {  
   "message": "Must have push access to repository",  
@@ -476,8 +477,46 @@ https://api.github.com/repos/shinonome128/own_dashboard/traffic/popular/referrer
 プッシュがない、URL 見ろとのこと  
   
 プッシュアクセスしてから実施  
+効果なし  
   
+URL見てみる  
+```  
+List referrers  
+Get the top 10 referrers over the last 14 days.  
   
+GET /repos/:owner/:repo/traffic/popular/referrers  
+  
+Response  
+  
+Status: 200 OK  
+  
+[  
+  {  
+    "referrer": "Google",  
+    "count": 4,  
+    "uniques": 3  
+  },  
+  {  
+    "referrer": "stackoverflow.com",  
+    "count": 2,  
+    "uniques": 2  
+  },  
+  {  
+    "referrer": "eggsonbread.com",  
+    "count": 1,  
+    "uniques": 1  
+  },  
+  {  
+    "referrer": "yandex.ru",  
+    "count": 1,  
+    "uniques": 1  
+  }  
+]  
+```  
+  
+画面が壊れたのでここまで、続きは画面が落ち着いてから  
+  
+反応変わらず 、fAPI 部分をデバッグ  
   
 gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる  
   
