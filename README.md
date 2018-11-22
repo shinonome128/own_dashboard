@@ -661,7 +661,9 @@ curl -i "https://api.github.com/repos/shinonome128/own_dashboard/commits?since=2
 タイムゾーンを変更  
 2018-11-23T00:00:00+0900  
 2018-11-23T23:59:59+0900  
+```  
 curl -i "https://api.github.com/repos/shinonome128/own_dashboard/commits?since=2018-11-23T00:00:00+0900&until=2018-11-23T23:59:59+0900"  
+```  
   
 Python での日付生成の関数サンプルを探す  
 ```  
@@ -671,7 +673,6 @@ datetime.date.today()
 datetime.datetime.now()  
 ```  
   
-  
 デバッグ実装  
   
 コメント作成  
@@ -679,11 +680,16 @@ datetime.datetime.now()
 テスト  
   
 ## レポジトリ毎のコミット数を日付指定で取得  
-  
-ここから再開  
-  
 ## コミット数を合計  
   
-## コメント修正  
+関数名の修正  
+  
+関数の引数、 URL を修正  
+  
+デバッグ実装  
+  
+コメント作成  
+  
+テスト  
   
 以上  
