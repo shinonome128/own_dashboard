@@ -2,7 +2,7 @@ import os, json, functools
 from urllib.request import urlopen, Request
 from datetime import datetime
 
-## レポジトリ情報取得
+## レポジトリ情報取得関数
 def get_repository (owner, token):
     url = "https://api.github.com/users/%s/repos" % (owner)
     headers = {
@@ -11,6 +11,7 @@ def get_repository (owner, token):
     }
     return urlopen (Request (url, headers=headers))
 
+connections = []
 try:
     # レポジトリ情報を取得
     connections = get_repository(
@@ -18,9 +19,11 @@ try:
                                 os.environ['GITHUB_TOKEN'])
     # JSONパース
     datadicts = json.loads (connections.read ())
+
 finally:
     # 後始末
     [c.close () for c in connections if c is not None]
+
 del connections
 
 # レポジトリ名一覧の取得
@@ -30,14 +33,9 @@ for i in datadicts:
         if k == 'name':
             repo.append(v)
 
-## 日付を取得
-since = str(datetime.now())[0:10]+'T00:00:00+0900'
-until = str(datetime.now())[0:10]+'T23:59:59+0900'
-
-## コミット情報取得
-def openTrafficAPI (owner, token, repo):
-    ## 日付を取得してパラメータで渡す、後でやる
-    url = "https://api.github.com/repos/%s/%s/commits" % (owner, repo)
+# コミット情報取得関数
+def get_commit (owner, token, since, until, repo):
+    url = "https://api.github.com/repos/%s/%s/commits?since=%s&until=%s" % (owner, repo, since, until)
     headers = {
         'Authorization': 'token %s' % token,
         'Accept': 'application/vnd.github.spiderman-preview'
@@ -46,22 +44,31 @@ def openTrafficAPI (owner, token, repo):
 
 connections = []
 try:
-    # openTrafficAPI関数の部分適用 (認証情報を環境変数から得て)
-    # 日付情報も後で渡す、あとでやる
-    fAPI = functools.partial (openTrafficAPI,
+    ## コミット情報を取得、部分的に変数を組み立て
+    fAPI = functools.partial (get_commit,
                                 os.environ['GITHUB_OWNER'],
-                                os.environ['GITHUB_TOKEN'])
+                                os.environ['GITHUB_TOKEN'],
+                                str(datetime.now())[0:10]+'T00:00:00+0900',
+                                str(datetime.now())[0:10]+'T23:59:59+0900')
     # open connections
     connections = [fAPI (r) for r in repo]
     # JSONパース
     datadicts = [json.loads (c.read ()) for c in connections]
+
 finally:
-    [c.close () for c in connections if c is not None]          # 後始末
+    # 後始末
+    [c.close () for c in connections if c is not None]
 
 del connections
 
-# 辞書型のデーターをダンプ
-dumps = [json.dumps (d, indent=2) for d in datadicts]
+# コミット回数の取得
+commit_counts = 0
+for i in datadicts:
+    if len(i) > 0:
+        for j in i:
+            for k in j.keys():
+                if k == 'sha':
+                    commit_counts += 1
 
-# 結合
-print ("\n".join (dumps))
+## 回数を表示
+print(commit_counts)
