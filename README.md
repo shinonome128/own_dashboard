@@ -602,7 +602,7 @@ curl -i https://api.github.com/repos/shinonome128/own_dashboard/commits
   
 ## レポジトリの一覧を取得  
   
-ここから再開  
+利用する API  
 ```  
 GET /users/:username/repos  
 ```  
@@ -610,7 +610,28 @@ GET /users/:username/repos
 curl -i https://api.github.com/users/shinonome128/repos  
 ```  
   
+取得用の関数作成  
+サンプルをそのまま流用  
+  
+配列へ落とす  
+サンプルをそのまま流用  
+  
+ちょっと connections と datadicts の中身が想像できないのでデバッグ  
+辞書形式で特定のレコードのみを抽出して、配列に格納する処理が必要  
+```  
+    "id": 145781682,  
+    "node_id": "MDEwOlJlcG9zaXRvcnkxNDU3ODE2ODI=",  
+    "name": "detectcat",  
+```  
+この name のフィールドを抽出して、配列に格納する  
+  
+テスト  
+  
+コメント整形  
+  
 ## 日付を生成  
+  
+ここから再開  
   
 ## レポジトリ毎のコミット数を日付指定で取得  
 ```  
