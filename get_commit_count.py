@@ -1,5 +1,6 @@
 import os, json, functools
 from urllib.request import urlopen, Request
+from datetime import datetime
 
 ## レポジトリ情報取得
 def get_repository (owner, token):
@@ -29,7 +30,9 @@ for i in datadicts:
         if k == 'name':
             repo.append(v)
 
-## 日付を生成、あとでやる
+## 日付を取得
+since = str(datetime.now())[0:10]+'T00:00:00+0900'
+until = str(datetime.now())[0:10]+'T23:59:59+0900'
 
 ## コミット情報取得
 def openTrafficAPI (owner, token, repo):
