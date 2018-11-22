@@ -60,6 +60,9 @@ https://developer.github.com/v3/repos/#list-your-repositories
 GitHub API 本家、 レポジトリのコミット数を取得  
 https://developer.github.com/v3/repos/commits/  
   
+GitHub API 本件、クエリパラメータサンプル  
+https://developer.github.com/v3/#parameters  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -629,17 +632,55 @@ curl -i https://api.github.com/users/shinonome128/repos
   
 コメント整形  
   
+  
 ## 日付を生成  
   
-ここから再開  
-  
-## レポジトリ毎のコミット数を日付指定で取得  
+必要なフォーマットを確認する  
 ```  
 GET /repos/:owner/:repo/commits  
 ```  
 ```  
 curl -i https://api.github.com/repos/shinonome128/own_dashboard/commits  
 ```  
+```  
+since 	string 	Only commits after this date will be returned. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.  
+until 	string 	Only commits before this date will be returned. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.  
+```  
+```  
+curl https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc  
+curl -i "https://api.github.com/repos/vmg/redcarpet/issues?state=closed"  
+```  
+```  
+curl -i "https://api.github.com/repos/shinonome128/own_dashboard/commits?since=2018-11-23T00:00:00Z&until=2018-11-24T23:59:59Z"  
+```  
+  
+本日の日付を生成して、9時間引く必要がある  
+2018-11-23T00:00:00Z  
+2018-11-24T23:59:59Z"  
+  
+タイムゾーンを変更  
+2018-11-23T00:00:00+0900  
+2018-11-23T23:59:59+0900  
+curl -i "https://api.github.com/repos/shinonome128/own_dashboard/commits?since=2018-11-23T00:00:00+0900&until=2018-11-23T23:59:59+0900"  
+  
+Python での日付生成の関数サンプルを探す  
+```  
+datetime.date.today()  
+```  
+```  
+datetime.datetime.now()  
+```  
+  
+  
+デバッグ実装  
+  
+コメント作成  
+  
+テスト  
+  
+## レポジトリ毎のコミット数を日付指定で取得  
+  
+ここから再開  
   
 ## コミット数を合計  
   
