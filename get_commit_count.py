@@ -1,6 +1,37 @@
 import os, json, functools
 from urllib.request import urlopen, Request
 
+## レポジトリ情報取得
+def get_repository (owner, token):
+    url = "https://api.github.com/users/%s/repos" % (owner)
+    headers = {
+        'Authorization': 'token %s' % token,
+        'Accept': 'application/vnd.github.spiderman-preview'
+    }
+    return urlopen (Request (url, headers=headers))
+
+try:
+    # レポジトリ情報を取得
+    connections = get_repository(
+                                os.environ['GITHUB_OWNER'],
+                                os.environ['GITHUB_TOKEN'])
+    # JSONパース
+    datadicts = json.loads (connections.read ())
+finally:
+    # 後始末
+    [c.close () for c in connections if c is not None]
+del connections
+
+# レポジトリ名一覧の取得
+repo = []
+for i in datadicts:
+    for k, v in i.items():
+        if k == 'name':
+            repo.append(v)
+
+## 日付を生成、あとでやる
+
+## コミット情報取得
 def openTrafficAPI (owner, token, repo):
     ## 日付を取得してパラメータで渡す、後でやる
     url = "https://api.github.com/repos/%s/%s/commits" % (owner, repo)
@@ -9,28 +40,6 @@ def openTrafficAPI (owner, token, repo):
         'Accept': 'application/vnd.github.spiderman-preview'
     }
     return urlopen (Request (url, headers=headers))
-
-## レポジトリの一覧を取得して配列に格納、あとでやる
-
-repo = [
-    'own_dashboard',
-    'autologin',
-    'cicddemo',
-    'detectcat',
-    'devops-example-client',
-    'devops-example-server',
-    'gcptest',
-    'gvim',
-    'gwcheck',
-    'jr',
-    'knowledge',
-    'lteanalysis',
-    'own_dashboard',
-    'trello_move_green_to_clip',
-    'trello_move_green_to_plan',
-    ]
-
-## 日付を生成、あとでやる
 
 connections = []
 try:
