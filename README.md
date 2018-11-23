@@ -546,7 +546,9 @@ For repositories that you have push access to, the traffic API provides access t
 あー、トークンの発行が必要なんだね、多分  
   
 ベークック認証だとうまくいく  
+```
 curl -i -u shinonome128 https://api.github.com/repos/shinonome128/own_dashboard/traffic/popular/referrers  
+```
   
 アクセストークンを取得して実行  
 エラー  
@@ -680,6 +682,9 @@ datetime.datetime.now()
 テスト  
   
 ## レポジトリ毎のコミット数を日付指定で取得  
+
+完了
+
 ## コミット数を合計  
   
 関数名の修正  
@@ -691,5 +696,71 @@ datetime.datetime.now()
 コメント作成  
   
 テスト  
-  
-以上  
+
+## 変数の外部ファイル化
+
+外部ファイルを GitHub 管理から外す
+```
+cd C:\Users\shino\doc\own_dashboard
+echo conf.txt>> .gitignore
+git add .gitignore
+git commit -m "Add config file"
+git push
+```
+
+外部ファイルとサンプルの作成
+トレロのの緑タグ移動のコードを参考にして作成
+```
+cd C:\Users\shino\doc\own_dashboard
+copy C:\Users\shino\doc\trello_move_green_to_plan\conf_sample.txt .\
+copy C:\Users\shino\doc\trello_move_green_to_plan\conf.txt .\
+```
+
+外部ファイルとサンプルの修正
+```
+cd C:\Users\shino\doc\own_dashboard
+copy /y conf.txt conf_sample.txt
+```
+
+デバッグ実装
+トレロのの緑タグ移動のコードを参考にして作成
+
+コメント追記
+
+テスト
+
+## ラッパーツール作成
+
+不要ファイルの削除
+```
+cd C:\Users\shino\doc\own_dashboard
+del accessGitHubTraffic.py
+git add *
+git commit -m "delete sample script"
+git push
+```
+
+WoX ラッパーの作成
+```
+cd C:\Users\shino\doc\own_dashboard
+copy C:\Users\shino\doc\trello_move_green_to_plan\move_green.bat .\
+```
+
+WoX ラッパーの修正
+Puse つけること
+
+テスト
+
+## gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる
+
+既存コードを GUI で GCF に移植して実行
+
+gcloud CLI ツールインスト
+
+ディプロイ方法ｈ交差
+
+ディプロイ
+
+テスト
+
+以上
