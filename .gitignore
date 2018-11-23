@@ -1,3 +1,4 @@
 # .gitignore  
 *.swp
 test.bat
+conf.txt
