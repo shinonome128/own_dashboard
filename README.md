@@ -29,7 +29,7 @@ http://python.zombie-hunting-club.com/entry/2017/11/03/223503
 フロントにJS, バックエンドにPython を使った簡単な例、JS から Python スクリプトを実行している例、ディプロイツールでディレクトリごとアップロードする方法がわかる  
 http://catindog.hatenablog.com/entry/2017/12/18/213627  
   
-Python 単体で作成した例、変数の定義方法、インポートの仕方がわかる  
+Python 単体で GCF 上に関数を作成した例、変数の定義方法、インポートの仕方がわかる  
 https://uyamazak.hatenablog.com/entry/2018/07/20/185026  
   
 GitHub APIを使ってリポジトリのアクセス数をpythonで取得、単体動作で、取得API 変更するだけなのでこれで良いかも  
@@ -753,13 +753,114 @@ Puse つけること
   
 ## gcloud CLI ツールを使って、ディレクトリごとアップロードしてみる  
   
-ここから再開  
-  
 既存コードを GUI で GCF に移植して実行  
+とりあえずコピペして実行  
+ディプロイエラー  
   
-gcloud CLI ツールインスト  
+主処理を　main() に変更  
+環境変数から変数値を取得するように設定  
+ディプロイは成功  
   
-ディプロイ方法ｈ交差  
+```  
+トリガーのタイプ  
+HTTP  
+URL  
+https://us-central1-gcf-demo-222516.cloudfunctions.net/function-1  
+```  
+トリガーのタイプ  
+  
+テスト  
+```  
+Error: could not handle the request  
+```  
+サンプルコードの書式に合わせてみる  
+最後、 return にする  
+  
+curl でたたいてみる  
+```  
+curl -i https://us-central1-gcf-demo-222516.cloudfunctions.net/function-1  
+```  
+```  
+HTTP/1.1 500 Internal Server Error  
+Content-Type: text/plain; charset=utf-8  
+X-Content-Type-Options: nosniff  
+X-Cloud-Trace-Context: f1159e75f31ee2f02d6a0883e3c831ac;o=1  
+Date: Fri, 23 Nov 2018 17:27:00 GMT  
+Server: Google Frontend  
+Content-Length: 36  
+Alt-Svc: quic=":443"; ma=2592000; v="44,43,39,35"  
+  
+Error: could not handle the request  
+```  
+書き方自体が悪そう、  
+GCF Python Error: could not handle the request  
+で調査  
+  
+GCF のログを調査  
+Stackdriver 経由でログが自動手的に見れるらしい  
+```  
+{  
+ insertId: "000000-c1582708-9337-4277-a5b6-d0fcb8eb739c"  
+  
+labels: {…}  
+ logName: "projects/gcf-demo-222516/logs/cloudfunctions.googleapis.com%2Fcloud-functions"  
+ receiveTimestamp: "2018-11-23T17:27:06.988100717Z"  
+  
+resource: {…}  
+ severity: "ERROR"  
+ textPayload: "Traceback (most recent call last):  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 297, in run_http_function  
+    result = _function_handler.invoke_user_function(flask.request)  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 199, in invoke_user_function  
+    return call_user_function(request_or_event)  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 192, in call_user_function  
+    return self._user_function(request_or_event)  
+TypeError: main() takes 0 positional arguments but 1 was given  
+"  
+ timestamp: "2018-11-23T17:27:00.880Z"  
+ trace: "projects/gcf-demo-222516/traces/f1159e75f31ee2f02d6a0883e3c831ac"  
+}  
+```  
+あー、引数を最低一つは受け取らなくちゃいけないらしい  
+  
+main() 関数に引数を一つ指定、使わないけど  
+サンプルでもかいてるね。。  
+  
+エラー  
+```  
+resource: {…}  
+ severity: "ERROR"  
+ textPayload: "Traceback (most recent call last):  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 297, in run_http_function  
+    result = _function_handler.invoke_user_function(flask.request)  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 199, in invoke_user_function  
+    return call_user_function(request_or_event)  
+  File "/env/local/lib/python3.7/site-packages/google/cloud/functions_v1beta2/worker.py", line 192, in call_user_function  
+    return self._user_function(request_or_event)  
+  File "/user_code/main.py", line 10, in main  
+    GITHUB_TOKEN = os.environ['GITHUB_REPO']  
+  File "/env/lib/python3.7/os.py", line 678, in __getitem__  
+    raise KeyError(key) from None  
+KeyError: 'GITHUB_REPO'  
+```  
+あー、os.env にしたとき修正もれ、、  
+  
+エラー  
+```  
+Error: function crashed. Details:  
+  
+'int' object is not callable  
+  
+The view function did not return a valid response. The return type must be a string, tuple, Response instance, or WSGI callable, but it was a int.  
+```  
+リターンは必ず文字列である必要とのこと  
+str() で修正  
+  
+動いたー、モバイルからも結果取得できたー！！  
+  
+手動で環境破棄  
+  
+## gcloud CLI ツールインスト  
   
 ディプロイ  
   
