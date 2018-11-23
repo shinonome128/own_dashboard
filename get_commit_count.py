@@ -1,8 +1,27 @@
 import os, json, functools
 from urllib.request import urlopen, Request
 from datetime import datetime
+import configparser
+import codecs
 
-## レポジトリ情報取得関数
+# 設定ファイルの読込
+conf_file = 'conf.txt'
+config = configparser.ConfigParser()
+
+try:
+    # configのファイルを開く
+    config.readfp(codecs.open(conf_file, "r", "utf8"))
+
+    # パラメータの読み込み
+    GITHUB_OWNER = config.get('API', 'GITHUB_OWNER')
+    GITHUB_TOKEN = config.get('API', 'GITHUB_TOKEN')
+
+except:
+    # 失敗した時はエラーとだけ伝える
+    print("Error occured")
+    exit()
+
+# レポジトリ情報取得関数
 def get_repository (owner, token):
     url = "https://api.github.com/users/%s/repos" % (owner)
     headers = {
@@ -15,8 +34,9 @@ connections = []
 try:
     # レポジトリ情報を取得
     connections = get_repository(
-                                os.environ['GITHUB_OWNER'],
-                                os.environ['GITHUB_TOKEN'])
+                                GITHUB_OWNER,
+                                GITHUB_TOKEN)
+
     # JSONパース
     datadicts = json.loads (connections.read ())
 
@@ -44,10 +64,10 @@ def get_commit (owner, token, since, until, repo):
 
 connections = []
 try:
-    ## コミット情報を取得、部分的に変数を組み立て
+    # コミット情報を取得、部分的に変数を組み立て
     fAPI = functools.partial (get_commit,
-                                os.environ['GITHUB_OWNER'],
-                                os.environ['GITHUB_TOKEN'],
+                                GITHUB_OWNER,
+                                GITHUB_TOKEN,
                                 str(datetime.now())[0:10]+'T00:00:00+0900',
                                 str(datetime.now())[0:10]+'T23:59:59+0900')
     # open connections
@@ -70,5 +90,5 @@ for i in datadicts:
                 if k == 'sha':
                     commit_counts += 1
 
-## 回数を表示
+# 回数を表示
 print(commit_counts)
