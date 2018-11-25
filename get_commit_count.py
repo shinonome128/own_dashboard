@@ -5,42 +5,42 @@ import configparser
 import codecs
 
 
-# 主処理
+# Main process
 def main(request = ''):
     try:
-        # 環境変数からパラメータ取得
+        # Get parameters from environment variables
         GITHUB_OWNER = os.environ['GITHUB_OWNER']
         GITHUB_TOKEN = os.environ['GITHUB_TOKEN']
 
     except:
-        # 設定ファイルの読込
+        # Load configuration file
         conf_file = 'conf.txt'
         config = configparser.ConfigParser()
 
-        # configのファイルを開く
+        # Open configuration file
         config.readfp(codecs.open(conf_file, "r", "utf8"))
 
-        # パラメータの読み込み
+        # Read parameters
         GITHUB_OWNER = config.get('API', 'GITHUB_OWNER')
         GITHUB_TOKEN = config.get('API', 'GITHUB_TOKEN')
 
     connections = []
     try:
-        # レポジトリ情報を取得
+        # Get repository informations
         connections = get_repository(
                                     GITHUB_OWNER,
                                     GITHUB_TOKEN)
 
-        # JSONパース
+        # Perse json
         datadicts = json.loads (connections.read ())
 
     finally:
-        # 後始末
+        # Cleanup
         [c.close () for c in connections if c is not None]
 
     del connections
 
-    # レポジトリ名一覧の取得
+    # Get repository name list
     repo = []
     for i in datadicts:
         for k, v in i.items():
@@ -49,7 +49,7 @@ def main(request = ''):
 
     connections = []
     try:
-        # コミット情報を取得、部分的に変数を組み立て
+        # Get commit informations, partially assembling variables
         fAPI = functools.partial (get_commit,
                                     GITHUB_OWNER,
                                     GITHUB_TOKEN,
@@ -57,16 +57,16 @@ def main(request = ''):
                                     str(datetime.now())[0:10]+'T23:59:59+0900')
         # open connections
         connections = [fAPI (r) for r in repo]
-        # JSONパース
+        # Perse json
         datadicts = [json.loads (c.read ()) for c in connections]
 
     finally:
-        # 後始末
+        # Cleanup
         [c.close () for c in connections if c is not None]
 
     del connections
 
-    # コミット回数の取得
+    # Get commit counts
     commit_counts = 0
     for i in datadicts:
         if len(i) > 0:
@@ -75,13 +75,13 @@ def main(request = ''):
                     if k == 'sha':
                         commit_counts += 1
 
-    # 回数を表示
+    # Display commit counts
     print(commit_counts)
 
-    # 回数を返す
+    # Return commit counts
     return str(commit_counts)
 
-# レポジトリ情報取得関数
+# Repository Information Acquisition Function
 def get_repository (owner, token):
     url = "https://api.github.com/users/%s/repos" % (owner)
     headers = {
@@ -90,7 +90,7 @@ def get_repository (owner, token):
     }
     return urlopen (Request (url, headers=headers))
 
-# コミット情報取得関数
+# Commit information acquisition function
 def get_commit (owner, token, since, until, repo):
     url = "https://api.github.com/repos/%s/%s/commits?since=%s&until=%s" % (owner, repo, since, until)
     headers = {
@@ -99,6 +99,6 @@ def get_commit (owner, token, since, until, repo):
     }
     return urlopen (Request (url, headers=headers))
 
-# お作法、直接呼び出した時のみ main() を実行
+# Execute main () only when you call it directly
 if __name__ == "__main__":
     main()
