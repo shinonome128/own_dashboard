@@ -872,10 +872,20 @@ GCF 動作用に改造した物とマージする
   
 テスト  
   
-ここから再開  
-  
 GCF にアップ  
   
 テスト  
-  
+```
+https://us-central1-gcf-demo-222516.cloudfunctions.net/function-1  
+```
+
+不要ファイルの削除
+```
+del C:\Users\shino\doc\own_dashboard
+del test.bat
+del get_commit_count_gcf.py
+git add *
+git commit -m "Delete test file"
+git push
+```
 EOF  
