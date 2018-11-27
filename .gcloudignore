@@ -20,3 +20,4 @@ node_modules
 *bat
 *md
 get_commit_count.py
+conf.yml  
