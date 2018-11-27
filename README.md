@@ -69,6 +69,12 @@ https://cloud.google.com/sdk/docs/?hl=ja
 Google CLI ツール、　deploy コマンドのリファレンス  
 https://cloud.google.com/sdk/gcloud/reference/functions/?hl=ja  
   
+Google CLI ツール、　環境変数の定義の仕方  
+https://cloud.google.com/functions/docs/env-var  
+  
+Google CLI ツール、　delete コマンドのリファレンス  
+https://cloud.google.com/sdk/gcloud/reference/functions/delete?hl=ja  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -948,10 +954,94 @@ cd C:\Users\shino\doc\own_dashboard
 copy get_commit_count.py main.py  
 ```  
   
-ここから最明  
+テスト  
+```  
+Deploying function (may take a while - up to 2 minutes)...failed.  
+ERROR: (gcloud.functions.deploy) OperationError: code=3, message=Function load error: File main.py is expected to contain a function named TEST  
+```  
+揃える必要があるみたい  
   
 テスト  
+```  
+gcloud functions deploy main --region=us-central1 --runtime=python37 --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+ディプロイは成功  
+環境変数が定義されていないので定義方法を調査  
   
-デストロイ  
+環境変数の設定方法  
+yml ファイルをオプション指定する  
+```  
+gcloud beta functions deploy FUNCTION_NAME --env-vars-file .env.yaml FLAGS...  
+```  
+.env.yml に記載  
+```  
+FOO: bar  
+BAZ: boo  
+```  
+  
+.gitignore に GCF の yml ファイルを追加  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+echo conf.yml>>.gitignore  
+git add .gitignore  
+git commit -m "Add conf.yml"  
+git push  
+```  
+  
+.gcloudignore にも追加  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+echo conf.yml>>.gcloudignore  
+git add .gcloudignore  
+git commit -m "Add conf.yml"  
+git push  
+```  
+  
+yml ファイルの作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy conf.txt conf.yml  
+```  
+  
+conf.yml の中身を修正  
+  
+ディプロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud functions deploy main --region=us-central1 --runtime=python37 --env-vars-file conf.yml --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+```  
+ERROR: (gcloud.functions.deploy) unrecognized arguments:  
+  --env-vars-file (did you mean '--flags-file'?)  
+```  
+そんな引数はないと。。。あー、ベータ版コマンドだった。。  
+  
+ベータコマンドでディプロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud beta functions deploy main --region=us-central1 --runtime=python37 --env-vars-file conf.yml --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+```  
+You do not currently have this command group installed.  Using it  
+requires the installation of components: [beta]  
+```  
+インストしろと怒られるけお、放っておけば、勝手にインストールプロセスが始まる  
+  
+ディストロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud beta functions delete main --region=us-central1  
+```  
+  
+サンプル yml を作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy conf.yml conf_sample.yml  
+```  
+中身を修正  
+今後やること  
+main()を修正  
+ディプロイとデストロイ用のバッチ作成  
+設定ファイルごとディプロイして動作するか確認  
   
 EOF  
