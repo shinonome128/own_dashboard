@@ -74,7 +74,6 @@ https://cloud.google.com/sdk/gcloud/reference/functions/?hl=ja
 小笠原さんのやり方で実装方法調査  
 GitHub のコミット数を取得  
 G ドライブのスプレッドシートに値を入力  
-```  
   
 ## 小笠原さんのやり方で実装方法調査  
   
@@ -922,7 +921,6 @@ TEST
 --source=C:\Users\shino\doc\own_dashboard  
 --trigger-http  
 ```  
-  
 ```  
 gcloud functions deploy TEST --region=us-central1 --runtime=python37 --source=C:\Users\shino\doc\own_dashboard --trigger-http  
 ```  
