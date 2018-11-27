@@ -19,5 +19,5 @@ node_modules
 *txt
 *bat
 *md
+*yml  
 get_commit_count.py
-conf.yml  
