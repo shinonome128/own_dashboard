@@ -63,11 +63,18 @@ https://developer.github.com/v3/repos/commits/
 GitHub API 本件、クエリパラメータサンプル  
 https://developer.github.com/v3/#parameters  
   
+Google Cloud SDK ツール、本家  
+https://cloud.google.com/sdk/docs/?hl=ja  
+  
+Google CLI ツール、　deploy コマンドのリファレンス  
+https://cloud.google.com/sdk/gcloud/reference/functions/?hl=ja  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
 GitHub のコミット数を取得  
 G ドライブのスプレッドシートに値を入力  
+```  
   
 ## 小笠原さんのやり方で実装方法調査  
   
@@ -888,5 +895,65 @@ git add *
 git commit -m "Delete test file"  
 git push  
 ```  
+  
+## 自分ダッシュボード、gcloud CLI ツールインスト  
+  
+使い方を調査  
+```  
+$ gcloud beta functions deploy ${YOUR_CLOUD_FUNCTION_NAME} --stage-bucket ${YOUR_STAGING_BUCKET} --trigger-http  
+```  
+  
+インストール  
+本家からバイナリをダウンロードして実行  
+  
+インストールディレクトリ  
+```  
+C:\Users\shino\AppData\Local\Google\Cloud SDK  
+```  
+  
+WoX 起動のコマンドプロンプトだとパスが通っていないので WoX を再起動  
+  
+コマンド組み立て  
+```  
+gcloud functions deploy  
+TEST  
+--region=us-central1  
+--runtime=python37  
+--source=C:\Users\shino\doc\own_dashboard  
+--trigger-http  
+```  
+  
+```  
+gcloud functions deploy TEST --region=us-central1 --runtime=python37 --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+```  
+C:\Users\shino\doc\own_dashboard>gcloud functions deploy TEST --region=us-central1 --runtime=python37 --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+Created .gcloudignore file. See `gcloud topic gcloudignore` for details.  
+Deploying function (may take a while - up to 2 minutes)...failed.  
+ERROR: (gcloud.functions.deploy) OperationError: code=3, message=Function load error: File main.py that is expected to define function doesn't exist  
+```  
+main.py である必要がある  
+  
+.gcloudignore に不要ファイルを追記  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+echo *swp>>.gcloudignore  
+echo *txt>>.gcloudignore  
+echo *bat>>.gcloudignore  
+echo *md>>.gcloudignore  
+echo get_commit_count.py>>.gcloudignore  
+```  
+  
+main.py の作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy get_commit_count.py main.py  
+```  
+  
+ここから最明  
+  
+テスト  
+  
+デストロイ  
   
 EOF  
