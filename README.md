@@ -1049,4 +1049,47 @@ main() を get_commit_count() に修正
   
 コメント修正  
   
+## ディプロイ、デストロイ用のバッチ作成  
+  
+ディプロイバッチ作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy get_commits.bat deploy.bat  
+exit  
+```  
+  
+deploy.bat の中身を編集  
+  
+ディプロイコマンド  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud beta functions deploy main --region=us-central1 --runtime=python37 --env-vars-file conf.yml --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+  
+デストロイバッチコマンド作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy get_commits.bat destroy.bat  
+exit  
+```  
+  
+destroy.bat の中身を編集  
+  
+デストロイコマンド  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud beta functions delete main --region=us-central1  
+```  
+  
+テスト  
+ディプロイ、実行、デストロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+deploy.bat  
+curl -i https://us-central1-gcf-demo-222516.cloudfunctions.net/main  
+destroy.bat  
+curl -i https://us-central1-gcf-demo-222516.cloudfunctions.net/main  
+exit  
+```  
+  
 EOF  
