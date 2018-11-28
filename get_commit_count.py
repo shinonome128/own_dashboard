@@ -4,8 +4,7 @@ from datetime import datetime
 import configparser
 import codecs
 
-
-# Main process
+# Read environment variables and settings
 def main(request = ''):
     try:
         # Get parameters from environment variables
@@ -23,6 +22,11 @@ def main(request = ''):
         # Read parameters
         GITHUB_OWNER = config.get('API', 'GITHUB_OWNER')
         GITHUB_TOKEN = config.get('API', 'GITHUB_TOKEN')
+
+    get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
+
+# Calculate commit counts
+def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
 
     connections = []
     try:
@@ -81,7 +85,7 @@ def main(request = ''):
     # Return commit counts
     return str(commit_counts)
 
-# Repository Information Acquisition Function
+# Repository information acquisition function
 def get_repository (owner, token):
     url = "https://api.github.com/users/%s/repos" % (owner)
     headers = {
@@ -99,6 +103,6 @@ def get_commit (owner, token, since, until, repo):
     }
     return urlopen (Request (url, headers=headers))
 
-# Execute main () only when you call it directly
+# Execute main() only when you call it directly
 if __name__ == "__main__":
     main()
