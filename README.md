@@ -1038,11 +1038,15 @@ gcloud beta functions delete main --region=us-central1
 cd C:\Users\shino\doc\own_dashboard  
 copy conf.yml conf_sample.yml  
 ```  
-中身を修正  
-今後やること  
-main()を修正  
-ディプロイとデストロイ用のバッチ作成  
-設定ファイルごとディプロイして動作するか確認  
-時刻の修正  
+  
+## 関数名 main() の修正  
+  
+main() を get_commit_count() に修正  
+素直に変えると、最後のモジュールから呼び出されたとき main() を実行しない分に引っかかる  
+やはり main() の部分には変数だけを定義するのが一番良い  
+  
+デバッグ実装  
+  
+コメント修正  
   
 EOF  
