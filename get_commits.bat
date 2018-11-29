@@ -5,5 +5,5 @@ REM Wox wrapper
 REM ///////////////////////////////////////////////////
 
 cd C:\Users\shino\doc\own_dashboard
-get_commit_count.py
+main.py
 Pause
