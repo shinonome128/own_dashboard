@@ -1091,14 +1091,14 @@ destroy.bat
 curl -i https://us-central1-gcf-demo-222516.cloudfunctions.net/main  
 exit  
 ```  
-
-## 設定ファイルごとアップロードして動作するか
-
-.gcloudignore で設定ファイルをコメントアウト
-
-deploy.bat で環境変数無しにする
-
-テスト
+  
+## 設定ファイルごとアップロードして動作するか  
+  
+.gcloudignore で設定ファイルをコメントアウト  
+  
+deploy.bat で環境変数無しにする  
+  
+テスト  
 ディプロイ、実行、デストロイ  
 ```  
 cd C:\Users\shino\doc\own_dashboard  
@@ -1108,57 +1108,60 @@ destroy.bat
 curl -i https://us-central1-gcf-demo-222516.cloudfunctions.net/main  
 exit  
 ```  
-conf.txt がアップロードされていない、リクエストが速すぎた？？
-あー、main.py を削除し忘れた
-
-mail.py の削除
-```
+conf.txt がアップロードされていない、リクエストが速すぎた？？  
+あー、main.py を削除し忘れた  
+  
+mail.py の削除  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-del main.py
-git add  main.py
-git commit -m "Delete main.py"
-```
-
-エラー
-```
-ERROR: (gcloud.beta.functions.deploy) OperationError: code=3, message=Function load error: File main.py that is expected to define function doesn't exist
-```
-GCF の仕様で、main.py のファイル名でなければならない
-
-ファイル名修正
-```
+del main.py  
+git add  main.py  
+git commit -m "Delete main.py"  
+```  
+  
+エラー  
+```  
+ERROR: (gcloud.beta.functions.deploy) OperationError: code=3, message=Function load error: File main.py that is expected to define function doesn't exist  
+```  
+GCF の仕様で、main.py のファイル名でなければならない  
+  
+ファイル名修正  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-copy get_commit_count.py main.py
-```
-
-エラー
-ディプロイは成功するけど、 conf_sample.txt がアップされてしまう
-ファイル一つの制限でもあるのかな？
-.gcloudignore に明示的に禁止して、 conf.txt をアップするようにする
-
-.gcloudignore の修正
-だめ、アップロードされない
-
-結論
-ファイル名は main.py で作成する
-main() で記載する
-main() 部分に環境変数、ファイルからの読み取り処理を入れる
-ローカル実行時は、 conf.txt から読み取る
-GCF 実行時は、 conf.yml に記載し、 環境変数から読み取る
-
-不要ファイルの削除
-```
+copy get_commit_count.py main.py  
+```  
+  
+エラー  
+ディプロイは成功するけど、 conf_sample.txt がアップされてしまう  
+ファイル一つの制限でもあるのかな？  
+.gcloudignore に明示的に禁止して、 conf.txt をアップするようにする  
+  
+.gcloudignore の修正  
+だめ、アップロードされない  
+  
+結論  
+ファイル名は main.py で作成する  
+main() で記載する  
+main() 部分に環境変数、ファイルからの読み取り処理を入れる  
+ローカル実行時は、 conf.txt から読み取る  
+GCF 実行時は、 conf.yml に記載し、 環境変数から読み取る  
+  
+不要ファイルの削除  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-del get_commit_count.py
-```
-
-WoX ラッパーの修正
-
-コメントを修正
-
-テスト
-ローカル実行問題なし
-クラウド実行は出力が OK になっている
-リターンが定義されていない
-
+del get_commit_count.py  
+```  
+  
+WoX ラッパーの修正  
+  
+コメントを修正  
+  
+テスト  
+ローカル実行問題なし  
+クラウド実行は出力が OK になっている  
+リターンが定義されていない  
+  
+テスト  
+問題なし！！  
+  
 EOF  
