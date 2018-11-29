@@ -23,7 +23,14 @@ def main(request = ''):
         GITHUB_OWNER = config.get('API', 'GITHUB_OWNER')
         GITHUB_TOKEN = config.get('API', 'GITHUB_TOKEN')
 
-    get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
+    # get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
+    commit_counts = get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
+
+    # Display commit counts
+    print(commit_counts)
+
+    # Return commit counts
+    return str(commit_counts)
 
 # Calculate commit counts
 def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
@@ -79,11 +86,7 @@ def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
                     if k == 'sha':
                         commit_counts += 1
 
-    # Display commit counts
-    print(commit_counts)
-
-    # Return commit counts
-    return str(commit_counts)
+    return commit_counts
 
 # Repository information acquisition function
 def get_repository (owner, token):
