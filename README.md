@@ -75,6 +75,18 @@ https://cloud.google.com/functions/docs/env-var
 Google CLI ツール、　delete コマンドのリファレンス  
 https://cloud.google.com/sdk/gcloud/reference/functions/delete?hl=ja  
   
+スタックドライバを使ってできること  
+https://www.topgate.co.jp/gcp20-what-is-stackdriver-logging  
+  
+Google Cloud クライアント ライブラリ 本家  
+https://cloud.google.com/apis/docs/cloud-client-libraries  
+  
+Google Cloud クライアント ライブラリ 、Python ライブラリ、本家  
+https://github.com/googleapis/google-cloud-python  
+  
+GCF + stackdriverサンプル、 gcf で　python を実行、 メモリ監視を stackdriver に入れる例  
+https://www.apps-gcp.com/cloud-functions-python-memory-usage/  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1163,5 +1175,56 @@ WoX ラッパーの修正
   
 テスト  
 問題なし！！  
+  
+## スタックドライバーにコミット数を入力  
+  
+  
+Google Cloud クライアント ライブラリ  
+Python モジュールをつかって stack driver logging にログを送信する方法を調査  
+  
+先にスタックドライバーと Python 実行のチュートリアルを試してみる  
+```  
+    名前：get-ebooks  
+    割り当てるメモリ：256MB  
+    トリガー：HTTP  
+    ソースコード：インラインエディタ  
+    ランタイム：Python3.7（ベータ版）  
+    main.py：GitHub からコピー＆ペースト  
+    このプログラムは、Google Books API を用いて、書籍の著者を検索キーとし、書籍のページ数が多い順にソートします。コードは以下に公開されています。  
+    https://github.com/PicardParis/cloud-snippets/blob/master/python/gcf-get-ebooks/main.py  
+    requirements.txt：変更なし  
+    実行する関数：get_ebooks_by_author  
+    リージョン：asia-northeast1  
+```  
+「モニタリング」をクリック  
+Alerting から Create a Policy を選択  
+OPT IN をクリック  
+ADD CONDITION をクリック  
+  
+・Target  
+```  
+大項目 	中項目 	入力値  
+Find resource type and metric 	Resource type: 	Cloud Function  
+– 	Metric: 	Memory Usages  
+Filter 	– 	不要  
+Group By 	– 	不要  
+Aggregation 	Aligner 	delta（変化量）  
+– 	Reducer 	99th percentile  
+Secondary Aggregation 	Reducer 	none  
+```  
+  
+・Configuration  
+```  
+大項目 	中項目 	入力値  
+Condition triggers if 	– 	Any time series violates  
+Condition 	31457280 B ※ 	is above  
+For 	– 	1 minute  
+```  
+  
+うん、動いた。。。  
+Kibana と一緒だね。  
+ターゲットとコンフィギュレーションで、 ライブラリ経由でいれた、メトリクスがみれれば、このやり方でいけそうだね。  
+  
+google cloud クライアントの Python ライブラリのサンプル集めから開始  
   
 EOF  
