@@ -1289,18 +1289,86 @@ The view function did not return a valid response. The return type must be a str
   
 ## Stackdriver Logging Python ライブラリを利用して直接ログに送信する  
   
+チュートリアルに従って、API の有効化、サービスアカントの取得  
+  
+ライブラリのインスト  
+```  
+cd C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts  
+pip install --upgrade google-cloud-logging  
+```  
+  
 サンプルコード  
 ```  
+# Imports the Google Cloud client library  
+import google.cloud.logging  
+  
+# Instantiates a client  
+client = google.cloud.logging.Client()  
+  
+# Connects the logger to the root logging handler; by default this captures  
+# all logs at INFO level and higher  
+client.setup_logging()  
 ```  
   
-実装  
+サンプルコード  
+```  
+# Imports Python standard library logging  
+import logging  
+  
+# The data to log  
+text = 'Hello, world!'  
+  
+# Emits the data using the standard logging module  
+logging.warn(text)  
+```  
+  
+デバッグ実装  
   
 ローカルテスト  
+エラー  
+```  
+google.auth.exceptions.DefaultCredentialsError: Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started  
+```  
   
-ディプロイ  
+Python ライブラリインストールガイドに従って、サービスアカントの作成、認証情報を取得  
   
-テスト  
+管理対象外にする  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+echo *.json>.gitignore  
+echo *.json>.gcloudignore  
+git add .gitignore  
+git add .gcloudignore  
+git commit -m "Add gcp credential"  
+git push  
+```  
+  
+認証鍵をディレクトリに移動  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+move C:\Users\shino\Downloads\gcf-demo-2b39da7a07dd.json .  
+```  
+  
+環境変数の設定  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+set GOOGLE_APPLICATION_CREDENTIALS=gcf-demo-2b39da7a07dd.json  
+```  
+  
+ローカルテスト  
+おー、うごいたーー  
+  
   
 ここから再開  
+さきに、ローカルロギングの Stackdriver のログを確認してからディプロイすること  
+  
+ディプロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+deploy.bat  
+```  
+  
+GCF テスト  
+GUI 上から実施  
   
 EOF  
