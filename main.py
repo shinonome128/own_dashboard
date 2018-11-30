@@ -4,6 +4,12 @@ from datetime import datetime
 import configparser
 import codecs
 
+# Imports the Google Cloud client library
+import google.cloud.logging
+
+# Imports Python standard library logging
+import logging
+
 # Read environment variables and settings
 def main(request = ''):
     try:
@@ -28,6 +34,19 @@ def main(request = ''):
 
     # Display commit counts
     print(commit_counts)
+
+    # Instantiates a client
+    client = google.cloud.logging.Client()
+
+    # Connects the logger to the root logging handler; by default this captures
+    # all logs at INFO level and higher
+    client.setup_logging()
+
+    # The data to log
+    text = 'Hello, world!'
+
+    # Emits the data using the standard logging module
+    logging.warn(text)
 
     # Return commit counts
     return str(commit_counts)
