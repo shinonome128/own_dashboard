@@ -1,5 +1,1 @@
-# .gitignore  
-*.swp
-test.bat
-conf.txt
-conf.yml
+*.json
