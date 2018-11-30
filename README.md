@@ -87,6 +87,9 @@ https://github.com/googleapis/google-cloud-python
 GCF + stackdriverサンプル、 gcf で　python を実行、 メモリ監視を stackdriver に入れる例  
 https://www.apps-gcp.com/cloud-functions-python-memory-usage/  
   
+Stackdriver Logging、 Python 用ロギング、リファレンス  
+https://cloud.google.com/logging/docs/setup/python  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1226,5 +1229,78 @@ Kibana と一緒だね。
 ターゲットとコンフィギュレーションで、 ライブラリ経由でいれた、メトリクスがみれれば、このやり方でいけそうだね。  
   
 google cloud クライアントの Python ライブラリのサンプル集めから開始  
+  
+## google cloud クライアントの Python ライブラリのサンプル集め、 stackdriver logging 連携  
+  
+Stackdriver Loggin Python ライブラリを利用しなくても、 GCF で実行された結果は出力がすでにロギングされている  
+```  
+resource.type="cloud_function"  
+resource.labels.function_name="main"  
+resource.labels.region="us-central1"  
+textPayload="5"  
+```  
+なので、あとは、ダッシュボードでどのように可視化できるかだけだね。  
+  
+  
+## Stackdriver Monitoring のダッシュボード作り方研究  
+  
+commit count のトリガー URL  
+```  
+https://us-central1-gcf-demo-222516.cloudfunctions.net/main  
+```  
+  
+やり方  
+Stackdriver Logging からログを抽出しカスタムメトリクスを作成  
+カスタムメトリクスを Stackdriver Monitoring におくり自動的にチャートを作成  
+  
+問題  
+コミットカウントがテキストフィールドなので、数値として認識されず、チャートが正常に作れない  
+チャートで利用するフィールドは 数値である必要がある  
+  
+方針  
+関数の戻り値を int にしてみる  
+Stackdriver Logging Python ライブラリを利用して直接ログに送信する  
+  
+## 関数の戻り値を int にしてみる  
+  
+ブラウザでの表示ができなくなるが、スタックドライバ経由で見れれば良いので問題ないと思われる  
+  
+デバッグ実装  
+  
+ディプロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+deploy.bat  
+```  
+  
+テスト  
+GUI 上から実施  
+```  
+Error: function crashed. Details:  
+  
+'int' object is not callable  
+  
+The view function did not return a valid response. The return type must be a string, tuple, Response instance, or WSGI callable, but it was a int.  
+```  
+  
+関数実行後の Stackdriver logging のログエントリを調査  
+関数が正常終了しないのでエントリにはトレースバックがロギングされる  
+没。。。  
+  
+## Stackdriver Logging Python ライブラリを利用して直接ログに送信する  
+  
+サンプルコード  
+```  
+```  
+  
+実装  
+  
+ローカルテスト  
+  
+ディプロイ  
+  
+テスト  
+  
+ここから再開  
   
 EOF  
