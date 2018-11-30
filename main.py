@@ -30,8 +30,7 @@ def main(request = ''):
     print(commit_counts)
 
     # Return commit counts
-    # return str(commit_counts)
-    return commit_counts
+    return str(commit_counts)
 
 # Calculate commit counts
 def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
