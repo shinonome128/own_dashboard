@@ -16,7 +16,9 @@
 node_modules
 #!include:.gitignore
 *swp
-*txt
+# *txt
+conf.txt
+conf_sample.txt
 *bat
 *md
 *yml  
