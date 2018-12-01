@@ -3,11 +3,7 @@ from urllib.request import urlopen, Request
 from datetime import datetime
 import configparser
 import codecs
-
-# Imports the Google Cloud client library
 import google.cloud.logging
-
-# Imports Python standard library logging
 import logging
 
 # Read environment variables and settings
@@ -42,11 +38,8 @@ def main(request = ''):
     # all logs at INFO level and higher
     client.setup_logging()
 
-    # The data to log
-    text = 'Hello, world!'
-
     # Emits the data using the standard logging module
-    logging.warn(text)
+    logging.warn(commit_counts)
 
     # Return commit counts
     return str(commit_counts)
