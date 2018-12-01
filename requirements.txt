@@ -1,0 +1,8 @@
+google-api-core==1.5.2
+google-api-python-client==1.6.7
+google-auth==1.6.1
+google-cloud-core==0.28.1
+google-cloud-logging==1.8.0
+google-cloud-storage==1.13.0
+google-resumable-media==0.3.1
+googleapis-common-protos==1.5.5
