@@ -1335,8 +1335,8 @@ Python ライブラリインストールガイドに従って、サービスア�
 管理対象外にする  
 ```  
 cd C:\Users\shino\doc\own_dashboard  
-echo *.json>.gitignore  
-echo *.json>.gcloudignore  
+echo *.json>>.gitignore  
+echo *.json>>.gcloudignore  
 git add .gitignore  
 git add .gcloudignore  
 git commit -m "Add gcp credential"  
@@ -1358,9 +1358,29 @@ set GOOGLE_APPLICATION_CREDENTIALS=gcf-demo-2b39da7a07dd.json
 ローカルテスト  
 おー、うごいたーー  
   
+Stackdriver のログを確認してからディプロイすること  
+```  
+ {  
+ insertId: "3c71xfg18mty8y"  
   
-ここから再開  
-さきに、ローカルロギングの Stackdriver のログを確認してからディプロイすること  
+jsonPayload: {  
+  message: "Hello, world!"  
+  python_logger: "root"  
+ }  
+ logName: "projects/gcf-demo-222516/logs/python"  
+ receiveTimestamp: "2018-12-01T16:03:55.218686614Z"  
+  
+resource: {  
+  
+labels: {  
+   project_id: "gcf-demo-222516"  
+  }  
+  type: "global"  
+ }  
+ severity: "WARNING"  
+ timestamp: "2018-12-01T16:03:55.218686614Z"  
+}  
+```  
   
 ディプロイ  
 ```  
@@ -1368,7 +1388,52 @@ cd C:\Users\shino\doc\own_dashboard
 deploy.bat  
 ```  
   
+エラー  
+```  
+  File "/user_code/main.py", line 8, in <module>  
+    import google.cloud.logging  
+ModuleNotFoundError: No module named 'google.cloud.logging'  
+```  
+インポートエラー、GCF 上で pip する方法が必要、多分、 requirement.txt に書けばよいだけ  
+  
+requirement.txt の書き方調査  
+pip freez で抽出する  
+  
+requirement.txt 作成  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts\pip3.6.exe freeze > requirements.txt  
+```  
+  
+.gcloudignore で テキストファイルの拡張子指定を削除して、requirements.txt がアップされるようにする  
+  
+エラー  
+requirements.txt が多すぎて、ディプロイに時間がかかりすぎる  
+```  
+ERROR: (gcloud.beta.functions.deploy) OperationError: code=3, message=Build failed: Build has timed out  
+```  
+  
+google.cloud.logging だけを追加する  
+  
 GCF テスト  
 GUI 上から実施  
+完璧、スタックドライバにきちんと Hello world がロギングされている  
+  
+## Stackdriver Logging のサンプルコードから、出力を変更して実装  
+  
+ここから再開  
+  
+ディプロイ  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+deploy.bat  
+```  
+  
+GCFでテスト  
+  
+Stackdriver Logging からログを抽出しカスタムメトリクスを作成  
+値を Int に指定  
+  
+カスタムメトリクスを Stackdriver Monitoring におくり自動的にチャートを作成  
   
 EOF  
