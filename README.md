@@ -90,6 +90,18 @@ https://www.apps-gcp.com/cloud-functions-python-memory-usage/
 Stackdriver Logging、 Python 用ロギング、リファレンス  
 https://cloud.google.com/logging/docs/setup/python  
   
+Stackdriver Monitoring  カスタム指標の使用  
+https://cloud.google.com/monitoring/custom-metrics/?hl=ja  
+  
+Stackdriver Monitoring 指標、時系列、リソース  
+https://cloud.google.com/monitoring/api/v3/metrics?hl=ja  
+  
+Stackdriver Monitoring サンプル一覧  
+https://cloud.google.com/monitoring/docs/samples?hl=ja  
+  
+Python Stackdriver Monitoring サンプルコード  
+https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1438,5 +1450,16 @@ Stackdriver Logging からログを抽出しカスタムメトリクスを作成
   
 Int にしたけど、なんかうまくいかん。。。  
 カスタム指標の使い方、きちんとドキュメント読んで理解が必要  
+  
+## stackdriver loging のカスタム指標とstackdriver monitoring の使い方を調べる  
+  
+Logging と Monitoring のチュートリアルを探す  
+ロギングした文字列から、数値を切り出して、Monitoring で数値のグラフにしているもの  
+グラフは手動で作るおｔして、 Stackdriver 入門ガイドのカスタム指標の仕様 を順番にやっていけばできそう  
+```  
+ほとんどの指標タイプは Stackdriver Monitoring によって事前定義されていますが、ご自身で指標スキーマを定義し、データをそこに送ることによって、カスタム指標を作成することもできます。たとえば、「小売店の日別売上高」は、カスタム指標です。カスタム指標を試してみるには、カスタム指標の使用をご覧ください。  
+```  
+  
+サンプルコードを動かして、可視化してみる  
   
 EOF  
