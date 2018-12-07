@@ -3,8 +3,6 @@ from urllib.request import urlopen, Request
 from datetime import datetime
 import configparser
 import codecs
-import google.cloud.logging
-import logging
 
 # Read environment variables and settings
 def main(request = ''):
@@ -30,16 +28,6 @@ def main(request = ''):
 
     # Display commit counts
     print(commit_counts)
-
-    # Instantiates a client
-    client = google.cloud.logging.Client()
-
-    # Connects the logger to the root logging handler; by default this captures
-    # all logs at INFO level and higher
-    client.setup_logging()
-
-    # Emits the data using the standard logging module
-    logging.warn(commit_counts)
 
     # Return commit counts
     return str(commit_counts)
