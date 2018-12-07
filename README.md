@@ -102,6 +102,12 @@ https://cloud.google.com/monitoring/docs/samples?hl=ja
 Python Stackdriver Monitoring サンプルコード  
 https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring  
   
+alerts-client  
+https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring/api/v3/alerts-client  
+  
+Stackdriver Monitoring Python Samples  
+https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring/api/v3/api-client  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1460,6 +1466,57 @@ Logging と Monitoring のチュートリアルを探す
 ほとんどの指標タイプは Stackdriver Monitoring によって事前定義されていますが、ご自身で指標スキーマを定義し、データをそこに送ることによって、カスタム指標を作成することもできます。たとえば、「小売店の日別売上高」は、カスタム指標です。カスタム指標を試してみるには、カスタム指標の使用をご覧ください。  
 ```  
   
-サンプルコードを動かして、可視化してみる  
+## サンプルコードを動かして、可視化してみる  
+  
+どのサンプルコードがやりたい事に一番近いか、取説を読む  
+分かりやすくて量が少ないことも重要  
+  
+やりたい事  
+GCF 上で動作して、任意の値を Stackdriver Monitoring に入れて、ダッシュボードで可視化する事  
+  
+サンプル  
+```  
+alerts-client  
+api-client  
+cloud-client  
+uptime-check-client  
+```  
+  
+alerts-client  
+```  
+This directory contains samples for Google Stackdriver Alerting API.  
+```  
+ちがう、アラートではなく、モニタリングのカスタム指標のコードが欲しい  
+  
+api-client  
+```  
+This directory contains samples for Stackdriver Monitoring. `  
+```  
+```  
+""" Sample command-line program for writing and reading Stackdriver Monitoring  
+API V3 custom metrics.  
+Simple command-line program to demonstrate connecting to the Google  
+Monitoring API to write custom metrics and read them back.  
+See README.md for instructions on setting up your development environment.  
+This example creates a custom metric based on a hypothetical GAUGE measurement.  
+To run locally:  
+    python custom_metric.py --project_id=<YOUR-PROJECT-ID>  
+"""  
+```  
+これだ  
+カスタムメトリクスに書き込み、読み込みのサンプルコード  
+  
+jubatus のインスタンスを起動して、コード実行してみる  
+```  
+python list_resources.py --project_id=jubatus-224508  
+python custom_metric.py --project_id=jubatus-224508  
+```  
+  
+コード実行結果がどのように見えるか、GCP Stackdriver Monitoring で見てみる  
+Monitoring のチャート作成で、 Custom Metric が表示され、グラフが描画される  
+多分この実装でけるはず!!  
+  
+次はコード解析と、コミットカウントのコードにマージするところから開始する  
+全然会計無いけど、実行環境を勝手に作ってくれるところがクラウドシェル便利だな。何かに転用してラクできないかな。  
   
 EOF  
