@@ -1515,31 +1515,57 @@ Monitoring のチャート作成で、 Custom Metric が表示され、グラフ
   
 次はコード解析と、コミットカウントのコードにマージするところから開始する  
 全然会計無いけど、実行環境を勝手に作ってくれるところがクラウドシェル便利だな。何かに転用してラクできないかな。  
-
-## サンプルコードの解析とマージ
-
-サンプルコードダウンロードしプロジェクトにコピー
-```
+  
+## サンプルコードの解析とマージ  
+  
+サンプルコードダウンロードしプロジェクトにコピー  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
-copy python-docs-samples\monitoring\api\v3\api-client\custom_metric.py .
-rmdir /s /q python-docs-samples
-```
-
-.gitignore, .gcloudignore に追加
-```
+git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git  
+copy python-docs-samples\monitoring\api\v3\api-client\custom_metric.py .  
+rmdir /s /q python-docs-samples  
+```  
+  
+.gitignore, .gcloudignore に追加  
+```  
 cd C:\Users\shino\doc\own_dashboard  
-echo custom_metric.py>> .gitignore
-echo custom_metric.py>> .gcloudiignore
-git add *
-git commit -m "Add sample code"
-git push
-```
-
-カスタムメトリクスの作成部分を抜粋
-
-Stackdriver Monitoring への書き込み処理を追記
-
-ダッシュボード作成
-
+echo custom_metric.py>> .gitignore  
+echo custom_metric.py>> .gcloudignore  
+git add *  
+git commit -m "Add sample code"  
+git push  
+```  
+  
+カスタムメトリクスの作成部分を抜粋  
+  
+Stackdriver Monitoring への書き込み処理を追記  
+  
+ローカルテスト  
+```  
+C:\Users\shino\doc\own_dashboard>py main.py  
+3  
+ListCustomMetrics response:  
+{'metricDescriptors': [{'description': 'An arbitrary measurement.',  
+                        'displayName': 'Custom Metric',  
+                        'labels': [{'description': 'An arbitrary measurement',  
+                                    'key': 'environment'}],  
+                        'metricKind': 'GAUGE',  
+                        'name': 'projects/gcf-demo-222516/metricDescriptors/custom.googleapis.com/custom_measurement',  
+                        'type': 'custom.googleapis.com/custom_measurement',  
+                        'unit': 'items',  
+                        'valueType': 'INT64'}]}  
+  
+C:\Users\shino\doc\own_dashboard>  
+```  
+うごいたぁー  
+  
+ダッシュボード作成  
+  
+ここから再開  
+  
+GCF への移植  
+コード不要部分の削除  
+クレデンシャルファイル名の外部変数化  
+requirements.txt の作り直し  
+  
 EOF  
