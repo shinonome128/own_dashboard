@@ -102,9 +102,6 @@ https://cloud.google.com/monitoring/docs/samples?hl=ja
 Python Stackdriver Monitoring サンプルコード  
 https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring  
   
-alerts-client  
-https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring/api/v3/alerts-client  
-  
 Stackdriver Monitoring Python Samples  
 https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring/api/v3/api-client  
   
@@ -1518,5 +1515,31 @@ Monitoring のチャート作成で、 Custom Metric が表示され、グラフ
   
 次はコード解析と、コミットカウントのコードにマージするところから開始する  
 全然会計無いけど、実行環境を勝手に作ってくれるところがクラウドシェル便利だな。何かに転用してラクできないかな。  
-  
+
+## サンプルコードの解析とマージ
+
+サンプルコードダウンロードしプロジェクトにコピー
+```
+cd C:\Users\shino\doc\own_dashboard  
+git clone https://github.com/GoogleCloudPlatform/python-docs-samples.git
+copy python-docs-samples\monitoring\api\v3\api-client\custom_metric.py .
+rmdir /s /q python-docs-samples
+```
+
+.gitignore, .gcloudignore に追加
+```
+cd C:\Users\shino\doc\own_dashboard  
+echo custom_metric.py>> .gitignore
+echo custom_metric.py>> .gcloudiignore
+git add *
+git commit -m "Add sample code"
+git push
+```
+
+カスタムメトリクスの作成部分を抜粋
+
+Stackdriver Monitoring への書き込み処理を追記
+
+ダッシュボード作成
+
 EOF  

@@ -4,3 +4,4 @@ test.bat
 conf.txt
 conf.yml
 *.json
+custom_metric.py
