@@ -27,8 +27,12 @@ def main(request = ''):
         # Read parameters
         GITHUB_OWNER = config.get('API', 'GITHUB_OWNER')
         GITHUB_TOKEN = config.get('API', 'GITHUB_TOKEN')
+        GOOGLE_APPLICATION_CREDENTIALS = config.get('API', 'GOOGLE_APPLICATION_CREDENTIALS')
+        
+        # Set env
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_APPLICATION_CREDENTIALS
 
-    # get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
+    # Get_commit_counts
     commit_counts = get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
 
     # Display commit counts
