@@ -1569,11 +1569,16 @@ google.auth.exceptions.DefaultCredentialsError: Could not automatically determin
 クレデンシャルファイルの自動設定ができないので変数化？  
 あー、思い出した、ローカル環境で動作させるために環境変数に設定していたんだ。。  
   
-ここから再開  
+## クレデンシャルファイル名の外部変数化  
   
-クレデンシャルファイル名の外部変数化  
-GCF への移植  
-コード不要部分の削除  
-requirements.txt の作り直し  
+conf.txt に GCP クレデンシャルの追記  
+main.py に conf.txt から GOOGLE_APPLICATION_CREDENTIALS 変数の json ファイル読み取り処理を追記  
+conf_sample.txt の修正  
+  
+## コード不要部分の削除  
+  
+## GCF への移植  
+  
+## requirements.txt の作り直し  
   
 EOF  
