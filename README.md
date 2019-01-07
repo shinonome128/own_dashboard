@@ -1561,11 +1561,19 @@ C:\Users\shino\doc\own_dashboard>
   
 ダッシュボード作成  
   
+  
+動かくなっている・・・  
+```  
+google.auth.exceptions.DefaultCredentialsError: Could not automatically determine credentials. Please set GOOGLE_APPLICATION_CREDENTIALS or explicitly create credentials and re-run the application. For more information, please see https://cloud.google.com/docs/authentication/getting-started  
+```  
+クレデンシャルファイルの自動設定ができないので変数化？  
+あー、思い出した、ローカル環境で動作させるために環境変数に設定していたんだ。。  
+  
 ここから再開  
   
+クレデンシャルファイル名の外部変数化  
 GCF への移植  
 コード不要部分の削除  
-クレデンシャルファイル名の外部変数化  
 requirements.txt の作り直し  
   
 EOF  
