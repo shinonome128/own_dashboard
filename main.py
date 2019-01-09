@@ -5,7 +5,6 @@ import configparser
 import codecs
 import googleapiclient.discovery
 import time
-import pprint
 
 # Read environment variables and settings
 def main(request = ''):
