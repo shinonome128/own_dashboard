@@ -9,6 +9,7 @@ import pprint
 
 # Read environment variables and settings
 def main(request = ''):
+
     try:
         # Get parameters from environment variables
         GITHUB_OWNER = os.environ['GITHUB_OWNER']
@@ -33,31 +34,12 @@ def main(request = ''):
     # Get_commit_counts
     commit_counts = get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
 
-    # This is the project id
+    # Set stackdriver monitoring param
     project_id = "gcf-demo-222516"
-    # This is the namespace for all custom metrics
     CUSTOM_METRIC_DOMAIN = "custom.googleapis.com"
-    # This is our specific metric name
-    CUSTOM_METRIC_TYPE = "{}/custom_measurement".format(CUSTOM_METRIC_DOMAIN)
-    METRIC_KIND = "GAUGE"
+    CUSTOM_METRIC_TYPE = "{}/CommitCounts".format(CUSTOM_METRIC_DOMAIN)
     project_resource = "projects/{0}".format(project_id)
     client = googleapiclient.discovery.build('monitoring', 'v3')
-
-
-    """ 
-    # Create custom metrics discriptor
-    create_custom_metric(client, project_resource, CUSTOM_METRIC_TYPE, METRIC_KIND)
-    """ 
-
-    """ 
-    # Get custom metrics discriptor
-    custom_metric = None
-    while not custom_metric:
-        # wait until it's created
-        time.sleep(1)
-        custom_metric = get_custom_metric(
-            client, project_resource, CUSTOM_METRIC_TYPE)
-    """ 
 
     # Write commit counts to stackdriver monitoring
     write_timeseries_value(client, project_resource, CUSTOM_METRIC_TYPE, commit_counts)
@@ -69,50 +51,8 @@ def main(request = ''):
     return str(commit_counts)
 
 
-# Create custom metric discriptor
-def create_custom_metric(client, project_id, custom_metric_type, metric_kind):
-    """Create custom metric descriptor"""
-    metrics_descriptor = {
-        "type": custom_metric_type,
-        "labels": [
-            {
-                "key": "environment",
-                "valueType": "STRING",
-                "description": "github commit counts"
-            }
-        ],
-        "metricKind": metric_kind,
-        "valueType": "INT64",
-        "unit": "items",
-        "description": "An arbitrary measurement.",
-        "displayName": "github commit counts"
-    }
-
-    return client.projects().metricDescriptors().create(
-        name=project_id, body=metrics_descriptor).execute()
-
-
-# Get custom metric discriptor
-def get_custom_metric(client, project_id, custom_metric_type):
-    """Retrieve the custom metric we created"""
-    request = client.projects().metricDescriptors().list(
-        name=project_id,
-        filter='metric.type=starts_with("{}")'.format(custom_metric_type))
-    response = request.execute()
-    print('ListCustomMetrics response:')
-    pprint.pprint(response)
-    try:
-        return response['metricDescriptors']
-    except KeyError:
-        return None
-
-
 # Write commits counts to stackdriver monitoring
-def write_timeseries_value(client, project_resource,
-                           custom_metric_type, commit_counts):
-    """Write the custom metric obtained by get_custom_data_point at a point in
-    time."""
-    # Specify a new data point for the time series.
+def write_timeseries_value(client, project_resource, custom_metric_type, commit_counts):
     now = get_now_rfc3339()
     timeseries_data = {
         "metric": {
@@ -139,37 +79,29 @@ def write_timeseries_value(client, project_resource,
     request.execute()
 
 
-# Add Stackdriver monitoring write
+# Get time
 def get_now_rfc3339():
-    # Return now
     return format_rfc3339(datetime.utcnow())
 
 
-# Add Stackdriver monitoring write
+# Change time format
 def format_rfc3339(datetime_instance=None):
-    """Formats a datetime per RFC 3339.
-    :param datetime_instance: Datetime instanec to format, defaults to utcnow
-    """
     return datetime_instance.isoformat("T") + "Z"
 
 
 # Calculate commit counts
 def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
-
     connections = []
     try:
         # Get repository informations
         connections = get_repository(
                                     GITHUB_OWNER,
                                     GITHUB_TOKEN)
-
         # Perse json
         datadicts = json.loads (connections.read ())
-
     finally:
         # Cleanup
         [c.close () for c in connections if c is not None]
-
     del connections
 
     # Get repository name list
@@ -191,11 +123,9 @@ def get_commit_count(GITHUB_OWNER, GITHUB_TOKEN):
         connections = [fAPI (r) for r in repo]
         # Perse json
         datadicts = [json.loads (c.read ()) for c in connections]
-
     finally:
         # Cleanup
         [c.close () for c in connections if c is not None]
-
     del connections
 
     # Get commit counts
