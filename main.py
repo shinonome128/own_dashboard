@@ -3,8 +3,6 @@ from urllib.request import urlopen, Request
 from datetime import datetime
 import configparser
 import codecs
-
-# Add Stackdriver monitoring write
 import googleapiclient.discovery
 import time
 import pprint
@@ -35,41 +33,44 @@ def main(request = ''):
     # Get_commit_counts
     commit_counts = get_commit_count(GITHUB_OWNER, GITHUB_TOKEN)
 
-    # Display commit counts
-    print(commit_counts)
-
-    # [START write to stackdriver monitoring]
     # This is the project id
     project_id = "gcf-demo-222516"
     # This is the namespace for all custom metrics
     CUSTOM_METRIC_DOMAIN = "custom.googleapis.com"
     # This is our specific metric name
     CUSTOM_METRIC_TYPE = "{}/custom_measurement".format(CUSTOM_METRIC_DOMAIN)
-    INSTANCE_ID = "test_instance"
     METRIC_KIND = "GAUGE"
-
     project_resource = "projects/{0}".format(project_id)
     client = googleapiclient.discovery.build('monitoring', 'v3')
-    # create_custom_metric(client, project_resource,
-    #                     CUSTOM_METRIC_TYPE, METRIC_KIND)
+
+
+    """ 
+    # Create custom metrics discriptor
+    create_custom_metric(client, project_resource, CUSTOM_METRIC_TYPE, METRIC_KIND)
+    """ 
+
+    """ 
+    # Get custom metrics discriptor
     custom_metric = None
     while not custom_metric:
         # wait until it's created
         time.sleep(1)
         custom_metric = get_custom_metric(
             client, project_resource, CUSTOM_METRIC_TYPE)
+    """ 
 
-    write_timeseries_value(client, project_resource,
-                           CUSTOM_METRIC_TYPE, INSTANCE_ID, METRIC_KIND, commit_counts)
-    # [END write to stackdriver monitoring]
+    # Write commit counts to stackdriver monitoring
+    write_timeseries_value(client, project_resource, CUSTOM_METRIC_TYPE, commit_counts)
+
+    # Display commit counts
+    print(commit_counts)
 
     # Return commit counts
     return str(commit_counts)
 
 
-# Add Stackdriver monitoring write
-def create_custom_metric(client, project_id,
-                         custom_metric_type, metric_kind):
+# Create custom metric discriptor
+def create_custom_metric(client, project_id, custom_metric_type, metric_kind):
     """Create custom metric descriptor"""
     metrics_descriptor = {
         "type": custom_metric_type,
@@ -77,21 +78,21 @@ def create_custom_metric(client, project_id,
             {
                 "key": "environment",
                 "valueType": "STRING",
-                "description": "An arbitrary measurement"
+                "description": "github commit counts"
             }
         ],
         "metricKind": metric_kind,
         "valueType": "INT64",
         "unit": "items",
         "description": "An arbitrary measurement.",
-        "displayName": "Custom Metric"
+        "displayName": "github commit counts"
     }
 
     return client.projects().metricDescriptors().create(
         name=project_id, body=metrics_descriptor).execute()
 
 
-# Add Stackdriver monitoring write
+# Get custom metric discriptor
 def get_custom_metric(client, project_id, custom_metric_type):
     """Retrieve the custom metric we created"""
     request = client.projects().metricDescriptors().list(
@@ -106,10 +107,9 @@ def get_custom_metric(client, project_id, custom_metric_type):
         return None
 
 
-# Add Stackdriver monitoring write
-# [START write_timeseries]
+# Write commits counts to stackdriver monitoring
 def write_timeseries_value(client, project_resource,
-                           custom_metric_type, instance_id, metric_kind, commit_counts):
+                           custom_metric_type, commit_counts):
     """Write the custom metric obtained by get_custom_data_point at a point in
     time."""
     # Specify a new data point for the time series.
@@ -119,13 +119,6 @@ def write_timeseries_value(client, project_resource,
             "type": custom_metric_type,
             "labels": {
                 "environment": "STAGING"
-            }
-        },
-        "resource": {
-            "type": 'gce_instance',
-            "labels": {
-                'instance_id': instance_id,
-                'zone': 'us-central1-f'
             }
         },
         "points": [
@@ -144,7 +137,6 @@ def write_timeseries_value(client, project_resource,
     request = client.projects().timeSeries().create(
         name=project_resource, body={"timeSeries": [timeseries_data]})
     request.execute()
-# [END write_timeseries]
 
 
 # Add Stackdriver monitoring write
