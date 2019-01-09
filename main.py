@@ -50,8 +50,8 @@ def main(request = ''):
 
     project_resource = "projects/{0}".format(project_id)
     client = googleapiclient.discovery.build('monitoring', 'v3')
-    create_custom_metric(client, project_resource,
-                         CUSTOM_METRIC_TYPE, METRIC_KIND)
+    # create_custom_metric(client, project_resource,
+    #                     CUSTOM_METRIC_TYPE, METRIC_KIND)
     custom_metric = None
     while not custom_metric:
         # wait until it's created
