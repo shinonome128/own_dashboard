@@ -1589,6 +1589,28 @@ conf_sample.txt の修正
   
 ## GCF への移植  
   
-## requirements.txt の作り直し  
+やり方忘れた。。  
+deploy.bat と destory.bat を作っていた  
+とりあえず、実行  
+```  
+ERROR: (gcloud.beta.functions.deploy) There was a problem refreshing your current auth tokens: invalid_grant: Bad Request  
+Please run:  
+  
+  $ gcloud auth login  
+  
+to obtain new credentials, or if you have already logged in with a  
+different account:  
+  
+  $ gcloud config set account ACCOUNT  
+  
+to select an already authenticated account to use.  
+shell returned 1  
+```  
+アカントが違う？？とりあえず、指定されたコマンドでアカント情報を見てみる  
+  
+自分の Gmail アカント でログイン  
+```  
+gcloud auth login  
+```  
   
 EOF  
