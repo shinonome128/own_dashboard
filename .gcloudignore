@@ -23,4 +23,3 @@ conf_sample.txt
 *md
 *yml  
 *.json
-custom_metric.py
