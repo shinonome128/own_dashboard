@@ -1613,4 +1613,24 @@ shell returned 1
 gcloud auth login  
 ```  
   
+## 返り値をスタックドライバーのダッシュボードのURL にする  
+  
+スタックドライバーのURLで埋め込みができるか調べる  
+HTMLタグを作成する  
+スタックドライバーのダッシュボードのチャートのオプションボタンから取得できる  
+```  
+<iframe src="https://public.google.stackdriver.com/public/chart/3264884998933248819?drawMode=color&showLegend=true&theme=light" width="800" height="400" scrolling="no" seamless="seamless"></iframe>  
+```  
+```  
+timeframe=1w  
+```  
+```  
+<iframe src="https://public.google.stackdriver.com/public/chart/3264884998933248819?drawMode=color&showLegend=true&theme=light" width="800" height="400" scrolling="no" seamless="seamless"&timeframe=1w></iframe>  
+```  
+  
+ローカルテスト  
+クラウドテスト  
+  
+## グラフが週単位にならないの調査・修正  
+  
 EOF  
