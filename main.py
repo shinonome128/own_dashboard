@@ -43,12 +43,11 @@ def main(request = ''):
     # Write commit counts to stackdriver monitoring
     write_timeseries_value(client, project_resource, CUSTOM_METRIC_TYPE, commit_counts)
 
-    # Display commit counts
-    print(commit_counts)
+    # dashboard url
+    line = "<iframe src=\"https://public.google.stackdriver.com/public/chart/3264884998933248819?drawMode=color&showLegend=true&theme=light\" width=\"800\" height=\"400\" scrolling=\"no\" seamless=\"seamless\"&timeframe=1w></iframe>"
 
-    # Return commit counts
-    return str(commit_counts)
-
+    # Display dashboard url
+    return line 
 
 # Write commits counts to stackdriver monitoring
 def write_timeseries_value(client, project_resource, custom_metric_type, commit_counts):
