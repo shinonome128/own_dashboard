@@ -44,7 +44,7 @@ def main(request = ''):
     write_timeseries_value(client, project_resource, CUSTOM_METRIC_TYPE, commit_counts)
 
     # dashboard url
-    line = "<iframe src=\"https://public.google.stackdriver.com/public/chart/3264884998933248819?drawMode=color&showLegend=true&theme=light\" width=\"800\" height=\"400\" scrolling=\"no\" seamless=\"seamless\"&timeframe=1w></iframe>"
+    line = "<iframe src=\"https://public.google.stackdriver.com/public/chart/3264884998933248819?drawMode=color&showLegend=true&theme=dark&timeframe=1w\" width=\"800\" height=\"400\" scrolling=\"no\" seamless=\"seamless\"></iframe>"
 
     # Display dashboard url
     return line 
