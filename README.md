@@ -104,19 +104,19 @@ https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitorin
   
 Stackdriver Monitoring Python Samples  
 https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/monitoring/api/v3/api-client  
-
-GCP, TravisCI 連携サンプル
-https://github.com/shinonome128/cicddemo
-
-GCP + TravisCI 連携ガイド
-https://cloud.google.com/solutions/continuous-delivery-with-travis-ci
-
-Travis 上での gcloud tool のインスト方法
-https://stackoverflow.com/questions/38762590/how-to-install-google-cloud-sdk-on-travis
-
-Travis CI 管理画面
-https://travis-ci.org/shinonome128/own_dashboard
-
+  
+GCP, TravisCI 連携サンプル  
+https://github.com/shinonome128/cicddemo  
+  
+GCP + TravisCI 連携ガイド  
+https://cloud.google.com/solutions/continuous-delivery-with-travis-ci  
+  
+Travis 上での gcloud tool のインスト方法  
+https://stackoverflow.com/questions/38762590/how-to-install-google-cloud-sdk-on-travis  
+  
+Travis CI 管理画面  
+https://travis-ci.org/shinonome128/own_dashboard  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1644,91 +1644,113 @@ timeframe=1w
 クラウドテスト  
   
 ## グラフが週単位にならないの調査・修正  
-
-iframe の使い方、ダッシュボードのクエリオプションの位置が間違っていたので修正
-
-## CICD 環境の整備
-
-cicd-demo の中で、circle ci がどのように動作していたか思い出す
-そもそも、 circle ci ではなく travis ci だった。。。
-```
-travis と レポジトリの連携
-
-deploy.sh作成
-ディプロイ用スクリプト
-SSH で特定ファイルを配置しているだけ
-今回は gcloud ツールが必要そう
-
-.travis.yml作成
-パラメータ、暗号化した環境変数
-インスタンスに travis cli tool をインスト
-インスタンス上で travis ログイン
-インスタンス上で宛先グローバルIPアドレスを暗号化して環境変数
-インスタンス上で秘密鍵を暗号化ファイルに変換
-インスタンス上で .travis.yml ファイルをコミットしプッシュ
-```
-えーとね、、、.travis.yml の生成、秘密鍵暗号化のインスタンスが必要そう
-
-Travis のヘルプを読む
-gcf の記載なし
-
-サンプル探し
-原理的には出来そうだし、材料もそろっていそうな気がする
-だからサンプルあまりないのかなぁ
-
-手順の整理
-travis と レポジトリの連携
-cicd-demo で .travis.yml 作成用インスタンスをディプロイ
-レポジトリをクローン
-travis でログインする
-アカントキーを暗号化する
-環境変数を暗号化する
-gcloud コマンドラインでdeploy.shを作成
-テスト
-cicd-demo で .travis.yml 作成用インスタンスをディストロイ
-
-
-## travis と レポジトリの連携
-
-Travis の GUI から実行
-
-## cicd-demo で .travis.yml 作成用インスタンスをディプロイ
-
-ディプロイ
-```
+  
+iframe の使い方、ダッシュボードのクエリオプションの位置が間違っていたので修正  
+  
+## CICD 環境の整備  
+  
+cicd-demo の中で、circle ci がどのように動作していたか思い出す  
+そもそも、 circle ci ではなく travis ci だった。。。  
+```  
+travis と レポジトリの連携  
+  
+deploy.sh作成  
+ディプロイ用スクリプト  
+SSH で特定ファイルを配置しているだけ  
+今回は gcloud ツールが必要そう  
+  
+.travis.yml作成  
+パラメータ、暗号化した環境変数  
+インスタンスに travis cli tool をインスト  
+インスタンス上で travis ログイン  
+インスタンス上で宛先グローバルIPアドレスを暗号化して環境変数  
+インスタンス上で秘密鍵を暗号化ファイルに変換  
+インスタンス上で .travis.yml ファイルをコミットしプッシュ  
+```  
+えーとね、、、.travis.yml の生成、秘密鍵暗号化のインスタンスが必要そう  
+  
+Travis のヘルプを読む  
+gcf の記載なし  
+  
+サンプル探し  
+原理的には出来そうだし、材料もそろっていそうな気がする  
+だからサンプルあまりないのかなぁ  
+  
+手順の整理  
+travis と レポジトリの連携  
+cicd-demo で .travis.yml 作成用インスタンスをディプロイ  
+レポジトリをクローン  
+travis でログインする  
+アカントキーを暗号化する  
+環境変数を暗号化する  
+gcloud コマンドラインでdeploy.shを作成  
+テスト  
+cicd-demo で .travis.yml 作成用インスタンスをディストロイ  
+  
+  
+## travis と レポジトリの連携  
+  
+Travis の GUI から実行  
+  
+## cicd-demo で .travis.yml 作成用インスタンスをディプロイ  
+  
+ディプロイ  
+```  
 cd C:\Users\shino\doc\cicddemo  
 terraform plan terraform  
-terraform apply terraform
-```
-
-## レポジトリをクローン
-
-```
-mkdir own_dashboard
-git clone https://github.com/shinonome128/own_dashboard own_dashboard
-```
-
-## travis でログインする
-
-```
-cd own_dashboard
+terraform apply terraform  
+```  
+  
+## レポジトリをクローン  
+  
+```  
+mkdir /home/shinonome128/own_dashboard  
+git clone https://github.com/shinonome128/own_dashboard own_dashboard  
+```  
+  
+## travis でログインする  
+  
+```  
+cd /home/shinonome128/own_dashboard  
 travis login  
-```
-GitHub アカントを求められるので手入力
-
-## アカントキーを暗号化する
-
-ここから再開
-
-## 環境変数を暗号化する
-## gcloud コマンドラインで deploy.sh を作成
-## テスト
-## cicd-demo で .travis.yml 作成用インスタンスをディストロイ
-
-```
+```  
+GitHub アカントを求められるので手入力  
+  
+## .travis.yml を作成  
+  
+ここから再開、手動で作らないとダメ  
+  
+## アカントキーを暗号化する  
+  
+手動でアカントキーをインスタンスにアップロード  
+  
+enc ファイルを生成  
+.travis.yml に追記される  
+```  
+cd /home/shinonome128/own_dashboard  
+travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w id_rsa -a  
+```  
+  
+## 環境変数を暗号化する  
+  
+環境変数ではなく、conf.yml ファイルを暗号化する  
+手動で暗号化ファイルをインスタンスにアップロードする  
+  
+enc ファイルを生成  
+.travis.yml に追記される  
+```  
+cd /home/shinonome128/own_dashboard  
+travis encrypt-file ~/conf.yml -w id_rsa -a  
+```  
+  
+## gcloud コマンドラインで deploy.sh を作成  
+## テスト  
+## cicd-demo で .travis.yml 作成用インスタンスをディストロイ  
+  
+```  
 cd C:\Users\shino\doc\cicddemo  
 terraform plan -destroy terraform  
-terraform destroy terraform
-```
-
+terraform destroy terraform  
+```  
+  
 EOF  
