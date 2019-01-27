@@ -1787,5 +1787,19 @@ gcloud tool のインストは未記載
 ## テスト  
   
 リードミーをプッシュ  
+プッシュならなんでも travis ci が走る  
+  
+エラー  
+```  
+$ openssl aes-256-cbc -K $encrypted_89c08c418c9a_key -iv $encrypted_89c08c418c9a_iv -in gcf-demo-2b39da7a07dd.json.enc -out id_rsa -d  
+bad decrypt  
+140090523051680:error:06065064:digital envelope routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:539:  
+The command "openssl aes-256-cbc -K $encrypted_89c08c418c9a_key -iv $encrypted_89c08c418c9a_iv -in gcf-demo-2b39da7a07dd.json.enc -out id_rsa -d" failed and exited with 1 during .  
+```  
+json ファイルの複合化で失敗  
+conf.yml は成功しているので、何かが重複していると思われる  
+  
+ここから再開  
+.travis.yml の json 暗号化行を削除して実行し切り分けを実施する  
   
 EOF  
