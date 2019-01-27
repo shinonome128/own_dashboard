@@ -1710,15 +1710,13 @@ git clone https://github.com/shinonome128/own_dashboard own_dashboard
   
 ## travis でログインする  
   
+ログイン  
 ```  
 cd /home/shinonome128/own_dashboard  
 travis login  
 ```  
+  
 GitHub アカントを求められるので手入力  
-  
-## .travis.yml を作成  
-  
-ここから再開、手動で作らないとダメ  
   
 ## アカントキーを暗号化する  
   
@@ -1731,7 +1729,7 @@ cd /home/shinonome128/own_dashboard
 travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w id_rsa -a  
 ```  
   
-## 環境変数を暗号化する  
+## 設定ファイルを暗号化する  
   
 環境変数ではなく、conf.yml ファイルを暗号化する  
 手動で暗号化ファイルをインスタンスにアップロードする  
@@ -1743,8 +1741,17 @@ cd /home/shinonome128/own_dashboard
 travis encrypt-file ~/conf.yml -w id_rsa -a  
 ```  
   
-## gcloud コマンドラインで deploy.sh を作成  
-## テスト  
+## .travis.yml と暗号化ファイルをプッシュ  
+  
+```  
+git add .travis.yml  
+git add *enc  
+git config --local user.email shinonome128@gmail.com  
+git config --local user.name "shinonome128"  
+git commit -m "Add travis config"  
+git push  
+```  
+  
 ## cicd-demo で .travis.yml 作成用インスタンスをディストロイ  
   
 ```  
@@ -1752,5 +1759,33 @@ cd C:\Users\shino\doc\cicddemo
 terraform plan -destroy terraform  
 terraform destroy terraform  
 ```  
+  
+## .travis.yml を作成  
+  
+.travis.yml 流用  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy C:\Users\shino\doc\devops-example-server\.travis.yml .  
+```  
+  
+中身を編集  
+before_install を削除  
+env を削除  
+  
+## gcloud コマンドラインで deploy.sh を作成  
+  
+deploy.sh 流用  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy C:\Users\shino\doc\devops-example-server\deploy.sh .  
+```  
+  
+中身を編集  
+ソース指定方法が不明  
+gcloud tool のインストは未記載  
+  
+## テスト  
+  
+リードミーをプッシュ  
   
 EOF  
