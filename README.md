@@ -1726,7 +1726,7 @@ enc ファイルを生成
 .travis.yml に追記される  
 ```  
 cd /home/shinonome128/own_dashboard  
-travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w id_rsa -a  
+travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w gcf-demo-2b39da7a07dd.json -a  
 ```  
   
 ## 設定ファイルを暗号化する  
@@ -1738,7 +1738,7 @@ enc ファイルを生成
 .travis.yml に追記される  
 ```  
 cd /home/shinonome128/own_dashboard  
-travis encrypt-file ~/conf.yml -w id_rsa -a  
+travis encrypt-file ~/conf.yml -w conf.yml -a  
 ```  
   
 ## .travis.yml と暗号化ファイルをプッシュ  
@@ -1798,8 +1798,14 @@ The command "openssl aes-256-cbc -K $encrypted_89c08c418c9a_key -iv $encrypted_8
 ```  
 json ファイルの複合化で失敗  
 conf.yml は成功しているので、何かが重複していると思われる  
+アウトプットファイルの名前が重複している  
+.travis.yml の before_install の openssl コマンドを見ると、 -out オプションで、enc ファイルを処理した結果だと判明、 id_rsa で同じファイルを生成しているので修正  
+  
+.travis.yml に -md md5をつける、conf.yml が成功しているので別問題と思われるけど  
+なおった。。。  
+  
+## gcloud tool のインストを deploy.sh に記載  
   
 ここから再開  
-.travis.yml の json 暗号化行を削除して実行し切り分けを実施する  
   
 EOF  
