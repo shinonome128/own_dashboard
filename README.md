@@ -1806,6 +1806,37 @@ conf.yml は成功しているので、何かが重複していると思われ�
   
 ## gcloud tool のインストを deploy.sh に記載  
   
-ここから再開  
+.travis.yml へ gcloud tool インストを追記  
+インストールまで成功  
+  
+ディプロイスクリプトでエラー  
+```  
+Restarting command:  
+  $ gcloud beta functions deploy main --region=us-central1 --runtime=python37 --env-vars-file conf.yml --source=./ --trigger-http  
+ERROR: (gcloud.beta.functions.deploy) You do not currently have an active account selected.  
+Please run:  
+  $ gcloud auth login  
+to obtain new credentials, or if you have already logged in with a  
+different account:  
+  $ gcloud config set account ACCOUNT  
+to select an already authenticated account to use.  
+Script failed with status 1  
+failed to deploy  
+```  
+  
+travis 上でアカント認証が必要  
+ローカルから gcloud ツールでディプロイするときは、shinonome128 で認証  
+```  
+C:\Users\shino\doc\own_dashboard>gcloud auth list  
+    Credentialed Accounts  
+ACTIVE  ACCOUNT  
+*       shinonome128@gmail.com  
+  
+To set the active account, run:  
+    $ gcloud config set account `ACCOUNT`  
+```  
+  
+既存の gcf-demo のクライアントシークレットを流用  
+ガイドを参考に、クライアントシークレットの暗号化と gcloud auth コマンドでクライアントシークレットを設定を .travis.yml に追記  
   
 EOF  
