@@ -1836,7 +1836,33 @@ To set the active account, run:
     $ gcloud config set account `ACCOUNT`  
 ```  
   
-既存の gcf-demo のクライアントシークレットを流用  
+## 既存の gcf-demo のクライアントシークレットを流用  
+  
 ガイドを参考に、クライアントシークレットの暗号化と gcloud auth コマンドでクライアントシークレットを設定を .travis.yml に追記  
+  
+ガイドでは .travis.yml で gcloud auth コマンドでキーファイルを指定  
+```  
+- gcloud auth activate-service-account --key-file client-secret.json  
+```  
+  
+ローカルで同じことができるかテスト  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+gcloud auth list  
+gcloud auth activate-service-account --key-file gcf-demo-2b39da7a07dd.json  
+gcloud auth list  
+gcloud beta functions deploy main --region=us-central1 --runtime=python37 --env-vars-file conf.yml --source=C:\Users\shino\doc\own_dashboard --trigger-http  
+```  
+```  
+ACTIVE  ACCOUNT  
+*       gcf-demo-222516@appspot.gserviceaccount.com  
+        shinonome128@gmail.com  
+```  
+アカント切り替え成功  
+ディｒプロイも問題なし  
+  
+.travis.yml に記載、もしくは、 deploy.sh にgcloud auth コマンドを記載  
+どちらに書いてもよさそうだけど、 deploy.sh に gcloud ツールコマンドを寄せたほうがシンプル  
+deploy.sh に gcloud auth コマンドを追記  
   
 EOF  
