@@ -1865,4 +1865,45 @@ ACTIVE  ACCOUNT
 どちらに書いてもよさそうだけど、 deploy.sh に gcloud ツールコマンドを寄せたほうがシンプル  
 deploy.sh に gcloud auth コマンドを追記  
   
+## deploy.sh に gcloud auth コマンドを追記  
+  
+テスト  
+```  
+ERROR: (gcloud.auth.activate-service-account) Could not read json file gcf-demo-2b39da7a07dd.json: No JSON object could be decoded  
+```  
+エラー、実行ディレクトリがわからないので、pwd で測って、コードでフルパス取得  
+  
+実行ディレクトリ  
+```  
+/home/travis/build/shinonome128/own_dashboard  
+```  
+ファイル一覧  
+```  
+-rw-rw-r-- 1 travis travis  2336 Feb 11 07:57 gcf-demo-2b39da7a07dd.json  
+-rw-rw-r-- 1 travis travis  2320 Feb 11 07:57 gcf-demo-2b39da7a07dd.json.enc  
+```  
+  
+テスト  
+```  
+ERROR: (gcloud.auth.activate-service-account) Could not read json file gcf-demo-2b39da7a07dd.json: No JSON object could be decoded  
+```  
+可能性として  
+JSON フォーマットが壊れている  
+デコードが違う  
+  
+ローカルとトラビスの cat 出力で比較  
+文字化けしとる、ビンゴ  
+  
+ローカルとトラビスの フォーマットを比較  
+```  
+gcf-demo-2b39da7a07dd.json: application/octet-stream; charset=binary  
+```  
+ローカルは utf-8、トラビス上はバイナリ、複合化に失敗している  
+  
+以前、複合化時に JSON ファイルだけエラーが出ていた  
+当時、 md5 オプションだけつけてしのいだ  
+そもそも暗号化コマンドを間違えている可能性あり  
+  
+## API キーの暗号化のやり直し  
+  
 EOF  
