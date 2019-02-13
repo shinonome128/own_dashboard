@@ -1687,10 +1687,21 @@ gcloud コマンドラインでdeploy.shを作成
 テスト  
 cicd-demo で .travis.yml 作成用インスタンスをディストロイ  
   
-  
 ## travis と レポジトリの連携  
   
 Travis の GUI から実行  
+  
+## .travis.yml を作成  
+  
+.travis.yml 流用  
+```  
+cd C:\Users\shino\doc\own_dashboard  
+copy C:\Users\shino\doc\devops-example-server\.travis.yml .  
+```  
+  
+中身を編集  
+before_install を削除  
+env を削除  
   
 ## cicd-demo で .travis.yml 作成用インスタンスをディプロイ  
   
@@ -1702,6 +1713,8 @@ terraform apply terraform
 ```  
   
 ## レポジトリをクローン  
+  
+GCP コンソールからインスタンスに CLI アクセス  
   
 ```  
 mkdir /home/shinonome128/own_dashboard  
@@ -1752,6 +1765,8 @@ git commit -m "Add travis config"
 git push  
 ```  
   
+GitHub パスワードを求められるので入力  
+  
 ## cicd-demo で .travis.yml 作成用インスタンスをディストロイ  
   
 ```  
@@ -1759,18 +1774,6 @@ cd C:\Users\shino\doc\cicddemo
 terraform plan -destroy terraform  
 terraform destroy terraform  
 ```  
-  
-## .travis.yml を作成  
-  
-.travis.yml 流用  
-```  
-cd C:\Users\shino\doc\own_dashboard  
-copy C:\Users\shino\doc\devops-example-server\.travis.yml .  
-```  
-  
-中身を編集  
-before_install を削除  
-env を削除  
   
 ## gcloud コマンドラインで deploy.sh を作成  
   
@@ -1905,5 +1908,41 @@ gcf-demo-2b39da7a07dd.json: application/octet-stream; charset=binary
 そもそも暗号化コマンドを間違えている可能性あり  
   
 ## API キーの暗号化のやり直し  
+  
+.travis.yml からシークレットキーを削除  
+暗号化ファイルも削除  
+インスタンスをディプロイ  
+アカントキーを暗号化  
+プッシュ  
+ディストロイ  
+  
+テスト  
+```  
+[0Ktravis_fold:start:before_install.2  
+[0Ktravis_time:start:0e1c4d5f  
+[0K$ openssl aes-256-cbc -K $encrypted_89c08c418c9a_key -iv $encrypted_89c08c418c9a_iv -in conf.yml.enc -out conf.yml -d  
+bad decrypt  
+140101367334560:error:06065064:digital envelope routines:EVP_DecryptFinal_ex:bad decrypt:evp_enc.c:539:  
+travis_time:end:0e1c4d5f:start=1550045693138997201,finish=1550045693147930354,duration=8933153  
+[0K[31;1mThe command "openssl aes-256-cbc -K $encrypted_89c08c418c9a_key -iv $encrypted_89c08c418c9a_iv -in conf.yml.enc -out conf.yml -d" failed and exited with 1 during .[0m  
+Your build has been stopped.  
+```  
+今度は、 conf.yml で複合化エラーが出た  
+同時に暗号化しないとダメ？  
+Travis 側の制限で、同時処理がだめ？  
+  
+切り分けで、成功している API キーの方をコメントアウトして動作を確認  
+conf.yml の複合化に失敗  
+  
+切り分けで同時に暗号化  
+暗号化ファイル削除  
+.travis.yml の複合化処理を削除  
+ディプロイ  
+暗号化  
+プッシュ  
+デストロイ  
+今度は API キーが複合化できない  
+  
+調査か別手法の検討が必要  
   
 EOF  
