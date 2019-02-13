@@ -117,6 +117,12 @@ https://stackoverflow.com/questions/38762590/how-to-install-google-cloud-sdk-on-
 Travis CI 管理画面  
 https://travis-ci.org/shinonome128/own_dashboard  
   
+Travis cli で暗号化できるのは一個まで  
+https://qiita.com/hnw/items/cbbbd117b13f05e05164  
+  
+Travis cli で暗号化できるのは一個まで、ワークアランド、本家のページ  
+https://docs.travis-ci.com/user/encrypting-files/#Encrypting-multiple-files  
+  
 ## やること  
   
 小笠原さんのやり方で実装方法調査  
@@ -1731,27 +1737,26 @@ travis login
   
 GitHub アカントを求められるので手入力  
   
-## アカントキーを暗号化する  
+## 暗号化ファイルの作成  
   
 手動でアカントキーをインスタンスにアップロード  
+手動で設定ファイルをインスタンスにアップロード  
   
 enc ファイルを生成  
-.travis.yml に追記される  
+.travis.yml に自動追記される  
 ```  
 cd /home/shinonome128/own_dashboard  
-travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w gcf-demo-2b39da7a07dd.json -a  
+tar cvf secrets.tar ~/gcf-demo-2b39da7a07dd.json ~/conf.yml  
+travis encrypt-file secrets.tar -w secrets.tar -a  
 ```  
   
-## 設定ファイルを暗号化する  
-  
-環境変数ではなく、conf.yml ファイルを暗号化する  
-手動で暗号化ファイルをインスタンスにアップロードする  
-  
-enc ファイルを生成  
-.travis.yml に追記される  
+.travis.yml に展開を手動で追記  
 ```  
-cd /home/shinonome128/own_dashboard  
-travis encrypt-file ~/conf.yml -w conf.yml -a  
+vi .travis.yml  
+```  
+```  
+before_install:  
+  - tar xvf secrets.tar  
 ```  
   
 ## .travis.yml と暗号化ファイルをプッシュ  
@@ -1942,7 +1947,44 @@ conf.yml の複合化に失敗
 プッシュ  
 デストロイ  
 今度は API キーが複合化できない  
+2番目に暗号化したものが複合化できない  
   
-調査か別手法の検討が必要  
+## apiキー複合化できない問題の調査、別手法の検討  
+  
+暗号化時の調査  
+コマンド内容調査  
+```  
+travis encrypt-file ~/gcf-demo-2b39da7a07dd.json -w gcf-demo-2b39da7a07dd.json -a  
+```  
+Trais encrypt-file コマンド制限で一個までしか暗号化できない、  
+最後のファイルが上書きされるらしい  
+ワークアランドは、複数のファイルを tar で固めて、暗号化する  
+.travis.yml で複合化後に展開する  
+  
+tar で複数ファイル固めてから暗号化  
+```  
+$ tar cvf secrets.tar foo bar  
+$ travis encrypt-file secrets.tar  
+$ vi .travis.yml  
+$ git add secrets.tar.enc .travis.yml  
+$ git commit -m 'use secret archive'  
+$ git push  
+```  
+  
+.travis.yml に展開を追記  
+```  
+before_install:  
+  - openssl aes-256-cbc -K $encrypted_5880cf525281_key -iv $encrypted_5880cf525281_iv -in secrets.tar.enc -out secrets.tar -d  
+  - tar xvf secrets.tar  
+```  
+  
+暗号化ファイル削除  
+.travis.yml の複合化行を削除  
+インスタンスディプロイ  
+tar で固める  
+暗号化  
+.travis.yml に tar 展開追記  
+コミット  
+デストロイ  
   
 EOF  
